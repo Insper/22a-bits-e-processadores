@@ -1,25 +1,10 @@
 #!/usr/bin/env python3
 import random
 from myhdl import block, instance, Signal, intbv, delay, bin
-from modulos import (
-    fullAdder,
-    halfAdder,
-    add16,
-    zerador,
-    inc16,
-    comparador,
-    inversor,
-    ula,
-)
+from ula import *
 
 random.seed(5)
 randrange = random.randrange
-
-
-def convert_add16(hdl):
-    q, a, b = [Signal(intbv(0)[15:0]) for i in range(3)]
-    add_1 = add16(a, b, q, 16)
-    add_1.convert(hdl=hdl)
 
 
 @block
@@ -256,7 +241,8 @@ def test_fullAdder():
     return fullAdder_1, stimulus
 
 
-if __name__ == "__main__":
+def test_all():
+
     print("---- fullAdder----")
     tb = test_fullAdder()
     # tb.config_sim(trace=True)
@@ -291,3 +277,7 @@ if __name__ == "__main__":
     print("---- ula ----")
     tb = test_ula()
     tb.run_sim()
+
+
+if __name__ == "__main__":
+    test_all()

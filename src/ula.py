@@ -28,7 +28,6 @@ def ula(x, y, c, zr, ng, saida):
     zy = zerador(c_zy, y, zy_out)
     ny = inversor(c_ny, zy_out, ny_out)
 
-    and_out = nx_out and ny_out
     add = add16(nx_out, ny_out, add_out)
 
     no = inversor(c_no, mux_out, no_out)
@@ -39,7 +38,7 @@ def ula(x, y, c, zr, ng, saida):
         if c_f == 1:
             mux_out.next = add_out
         else:
-            mux_out.next = and_out
+            mux_out.next = nx_out & ny_out
 
         saida.next = no_out[len(saida) :]
 

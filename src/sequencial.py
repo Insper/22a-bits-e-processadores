@@ -19,7 +19,6 @@ from myhdl import *
 
 @block
 def ram(dout, din, addr, we, clk, width=16, depth=128):
-    """Ram model"""
 
     mem = [Signal(intbv(0)[width:]) for i in range(depth)]
 
@@ -32,6 +31,7 @@ def ram(dout, din, addr, we, clk, width=16, depth=128):
     return logic
 
 
+@block
 def pc(increment, load, i, output, rst, clk):
     @always(clk.posedge, rst.posedge)
     def logic():

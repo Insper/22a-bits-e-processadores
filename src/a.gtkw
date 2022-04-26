@@ -1,0 +1,46 @@
+[*]
+[*] GTKWave Analyzer v3.3.111 (w)1999-2020 BSI
+[*] Tue Apr 12 12:05:45 2022
+[*]
+[dumpfile] "/home/corsi/work/ElementosBCC/MyHDL/z01/src/test_cpu.vcd"
+[dumpfile_mtime] "Tue Apr 12 11:52:27 2022"
+[dumpfile_size] 1759282
+[savefile] "/home/corsi/work/ElementosBCC/MyHDL/z01/src/a.gtkw"
+[timestart] 0
+[size] 3840 2074
+[pos] -1 -1
+*-3.178790 50 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] test_cpu.
+[treeopen] test_cpu.cpu0.
+[sst_width] 372
+[signals_width] 302
+[sst_expanded] 1
+[sst_vpaned_height] 626
+@28
+test_cpu.cpu0.clk
+test_cpu.cpu0.instruction[17:0]
+@22
+test_cpu.cpu0.ula_x[15:0]
+test_cpu.cpu0.ula_y[15:0]
+test_cpu.cpu0.reg_d[15:0]
+test_cpu.cpu0.reg_a[15:0]
+@28
+test_cpu.cpu0.pc_load
+@22
+test_cpu.cpu0.ula_out[15:0]
+test_cpu.cpu0.ula0.saida[15:0]
+@28
+test_cpu.cpu0.ula0.c_f
+test_cpu.cpu0.ula0.c_no
+test_cpu.cpu0.ula0.c_ny
+test_cpu.cpu0.ula0.c_zy
+test_cpu.cpu0.ula0.c_nx
+test_cpu.cpu0.ula0.c_zx
+test_cpu.cpu0.ula0.no_out
+test_cpu.cpu0.ula0.mux_out
+@29
+test_cpu.cpu0.ula0.nx_out
+@28
+test_cpu.cpu0.ula0.ny_out
+[pattern_trace] 1
+[pattern_trace] 0

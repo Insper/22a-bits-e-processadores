@@ -153,7 +153,7 @@ def test_dff():
     return dff_inst, clkgen, stimulus, cleargen
 
 
-if __name__ == "__main__":
+def test_all():
     print("---- dff ----")
     tb = traceSignals(test_dff)
     sim = Simulation(tb)
@@ -167,7 +167,7 @@ if __name__ == "__main__":
     sim.quit()
 
     print("---- register ----")
-    tb = traceSignals(test_register)
+    tb = test_register()
     sim = Simulation(tb)
     sim.run(500)
     sim.quit()
@@ -179,12 +179,12 @@ if __name__ == "__main__":
     sim.quit()
 
     print("---- ram ----")
-    tb = traceSignals(test_ram)
-    sim = Simulation(tb)
-    sim.run(500)
-    sim.quit()
-
-    print("---- ram ----")
     tb = test_ram()
     tb.run_sim(500)
-    convert_ram(hdl="vhdl")
+
+
+#    convert_ram(hdl="vhdl")
+
+
+if __name__ == "__main__":
+    test_all()
