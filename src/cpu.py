@@ -17,6 +17,7 @@ def cpu(inMem, instruction, outMem, addressM, writeM, pcount, rst, clk):
     ula_ctr = Signal(intbv(0))
     ula_zr = Signal(bool(0))
     ula_ng = Signal(bool(0))
+
     pc_load = Signal(bool(0))
 
     ula_1 = ula(ula_x, ula_y, ula_ctr, ula_zr, ula_ng, ula_out)
@@ -61,9 +62,6 @@ def cpu(inMem, instruction, outMem, addressM, writeM, pcount, rst, clk):
             reg_a.next = 0
             reg_d.next = 0
         elif clk:
-            print(bin(instruction, 16))
-            print(instruction[17])
-            print(reg_a)
             if instruction[17] == False:
                 reg_a.next = instruction[16:]
             else:
@@ -78,78 +76,11 @@ def cpu(inMem, instruction, outMem, addressM, writeM, pcount, rst, clk):
 
                 if instruction[4] == 1:
                     reg_d.next = ula_out
+                    print(bin(ula_out, 16))
+                    print(bin(instruction))
                 else:
                     reg_d.next = reg_d
 
     return instances()
 
 
-def rom_init_from_hack(fileName):
-    with open(fileName) as f:
-        return [int(l, 2) for l in f.read().splitlines()]
-
-
-@block
-def rom_sim(dout, addr, clk, hackFile, width=16, depth=128):
-
-    rom = rom_init_from_hack(hackFile)
-
-    @always(clk.posedge)
-    def access():
-        address = int(addr)
-        if address >= len(rom):
-            dout.next = 0
-        else:
-            dout.next = rom[address]
-
-    return instances()
-
-
-def ram_init_from_mif(mem, fileName):
-    init = False
-    with open(fileName) as f:
-        for l in f.read().splitlines():
-            if l.find("END") > -1:
-                init = False
-            if init:
-                v = l.replace(";", ":").split(":")
-                address = int(v[0])
-                value = int(v[1], 2)
-                mem[address] = Signal(value)
-            if l.find("BEGIN") > -1:
-                init = True
-
-
-def ram_to_file(mem):
-    with open("out.txt", "w") as f:
-        for idx, x in enumerate(mem):
-            f.write(str(idx) + " : " + bin(x, 16) + "\n")
-        f.close()
-
-
-@block
-def ram_sim(dout, din, addr, we, clk, mifFile, width=16, depth=128):
-
-    mem = [Signal(intbv(0)) for i in range(depth)]
-    ram_init_from_mif(mem, mifFile)
-
-    f_write = Signal(bool(0))
-
-    @always(clk.posedge)
-    def logic():
-        if we:
-            mem[addr.val].next = din
-
-            # schedule to dump to file on next clock
-            f_write.next = True
-
-        if f_write.val:
-            # TODO: melhorar?
-            ram_to_file(mem)
-            f_write.next = False
-
-    @always_comb
-    def comb():
-        dout.next = mem[addr.val]
-
-    return instances()
