@@ -88,7 +88,7 @@ def test_cpu():
         outMem,
         addressM,
         writeM,
-        clk,
+        clkMem,
         "add_nasm/add0_in.mif",
         depth=2**15 - 1,
     )
@@ -139,4 +139,4 @@ if __name__ == "__main__":
     print("---- cpu ----")
     tb = test_cpu()
     tb.config_sim(trace=True, tracebackup=False)
-    tb.run_sim(70)
+    tb.run_sim(300)

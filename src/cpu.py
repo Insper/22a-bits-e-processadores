@@ -76,8 +76,6 @@ def cpu(inMem, instruction, outMem, addressM, writeM, pcount, rst, clk):
 
                 if instruction[4] == 1:
                     reg_d.next = ula_out
-                    print(bin(ula_out, 16))
-                    print(bin(instruction))
                 else:
                     reg_d.next = reg_d
 
