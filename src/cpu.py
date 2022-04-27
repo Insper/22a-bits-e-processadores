@@ -8,8 +8,8 @@ from sequencial import pc
 @block
 def cpu(inMem, instruction, outMem, addressM, writeM, pcount, rst, clk):
 
-    reg_d = Signal(intbv(2)[16:])
-    reg_a = Signal(intbv(2)[16:])
+    reg_d = Signal(intbv(0)[16:])
+    reg_a = Signal(intbv(0)[16:])
 
     ula_x = Signal(intbv(1)[16:])
     ula_y = Signal(intbv(2)[16:])
@@ -56,29 +56,19 @@ def cpu(inMem, instruction, outMem, addressM, writeM, pcount, rst, clk):
         else:
             pc_load.next = 0
 
-    @always(clk.posedge, rst.posedge)
+    @always(clk.posedge)
     def registers():
-        if rst:
-            reg_a.next = 0
-            reg_d.next = 0
-        elif clk:
-            if instruction[17] == False:
-                reg_a.next = instruction[16:]
+        if instruction[17] == False:
+            reg_a.next = instruction[16:]
+        else:
+            if instruction[3] == 1:
+                reg_a.next = ula_out
             else:
-                #                print(
-                #                    "%s %s %s" % (bin(instruction, 16), bin(reg_a, 16), bin(reg_d, 16))
-                #                )
+                reg_a.next = reg_a
 
-                if instruction[3] == 1:
-                    reg_a.next = ula_out
-                else:
-                    reg_a.next = reg_a
-
-                if instruction[4] == 1:
-                    reg_d.next = ula_out
-                else:
-                    reg_d.next = reg_d
+            if instruction[4] == 1:
+                reg_d.next = ula_out
+            else:
+                reg_d.next = reg_d
 
     return instances()
-
-
