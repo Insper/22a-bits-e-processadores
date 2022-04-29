@@ -22,61 +22,61 @@ def test_ula():
         control.next = 0b000010
         yield delay(10)
         if saida != x + y:
-            print("erro")
+            print("erro 1")
 
         control.next = 0b000000
         yield delay(10)
-        if saida != x and y:
-            print("erro")
+        if saida != (x & y):
+            print("erro 2")
 
         control.next = 0b100010
         yield delay(10)
         if saida != y:
-            print("erro")
+            print("erro 3")
 
         control.next = 0b001010
         yield delay(10)
         if saida != x:
-            print("erro")
+            print("erro 4")
 
         control.next = 0b100110
         yield delay(10)
         if saida != ~y:
-            print("erro")
+            print("erro 5")
 
         control.next = 0b011010
         yield delay(10)
         if saida != ~x:
-            print("erro")
+            print("erro 6")
 
         control.next = 0b101010
         yield delay(10)
         if saida != 0:
-            print("erro")
+            print("erro 7")
 
         control.next = 0b101000
         yield delay(10)
         if saida != 0:
-            print("erro")
+            print("erro 8")
 
         control.next = 0b101001
         yield delay(10)
         if saida != intbv(-1)[16:]:
-            print("erro")
+            print("erro 9")
 
         # ------ zr ng --------#
         if zr != 0 and ng != 1:
-            print("erro")
+            print("erro 10")
 
         control.next = 0b101000
         yield delay(10)
         if zr != 1 and ng != 0:
-            print("erro")
+            print("erro 11")
 
         control.next = 0b000010
         yield delay(10)
         if zr != 0 and ng != 0:
-            print("erro")
+            print("erro 12")
 
     return ula_1, stimulus
 
@@ -110,7 +110,7 @@ def test_comparador():
     a = Signal(intbv(0))
     ng = Signal(bool(0))
     zr = Signal(bool(0))
-    comparador_1 = comparador(a, zr, ng)
+    comparador_1 = comparador(a, zr, ng, 16)
 
     @instance
     def stimulus():
@@ -119,7 +119,7 @@ def test_comparador():
         if ng != 0 or zr != 1:
             print("erro 1")
             print("%s %s %s" % (bin(a, 16), bin(zr, 1), bin(ng, 1)))
-        a.next = -1
+        a.next = 0xFFFF
         yield delay(10)
         if ng != 1 or zr != 0:
             print("erro 2")

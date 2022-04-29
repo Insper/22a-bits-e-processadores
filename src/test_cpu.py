@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+import yaml
+from os import path, listdir
 from myhdl import *
 from cpu import *
 from sequencial import *
@@ -26,6 +28,7 @@ def ram_init_from_mif(mem, fileName):
 
 
 def ram_dump_file(mem, outFile):
+
     with open(outFile, "w") as f:
         for idx, x in enumerate(mem):
             f.write(str(idx) + " : " + bin(x, 16) + "\n")
@@ -64,11 +67,12 @@ def rom_sim(dout, addr, clk, hackFile, width=16, depth=128):
     return instances()
 
 
-mem = [Signal(intbv(0)) for i in range(2**15 - 1)]
+def ram_clear(mem, depth):
+    mem = [Signal(intbv(0)) for i in mem]
 
 
 @block
-def ram_sim(dout, din, addr, we, clk, mifFile, width=16, depth=128, dump=True):
+def ram_sim(mem, dout, din, addr, we, clk, mifFile, width=16, depth=128, dump=True):
     ram_init_from_mif(mem, mifFile)
 
     @always(clk.posedge)
@@ -104,7 +108,7 @@ def ram_sim2(dout, din, addr, we, clk, mifFile, width=16, depth=128):
 
 
 @block
-def test_cpu(inRamMif, inRomHack):
+def test_cpu(mem, inRamMif, inRomHack):
     instruction = Signal(intbv(0)[18:])
     inMem, outMem = [Signal(intbv(15)[16:]) for i in range(2)]
     pcount, addressM = [Signal(intbv(0)[15:]) for i in range(2)]
@@ -114,7 +118,7 @@ def test_cpu(inRamMif, inRomHack):
 
     cpu_1 = cpu(inMem, instruction, outMem, addressM, writeM, pcount, rst, clk)
     ram_1 = ram_sim(
-        inMem, outMem, addressM, writeM, clkMem, inRamMif, depth=2**15 - 1
+        mem, inMem, outMem, addressM, writeM, clkMem, inRamMif, depth=2**15 - 1
     )
     rom_1 = rom_sim(instruction, pcount, clk, inRomHack)
 
@@ -135,13 +139,84 @@ def test_cpu(inRamMif, inRomHack):
     return instances()
 
 
+def run_cpu_test(name, inRamMif, inRomHack, testFile, time):
+    print("--- %s ---" % name)
+    mem = [Signal(intbv(0)) for i in range(2**15 - 1)]
+    tb = test_cpu(mem, inRamMif, inRomHack)
+    tb.config_sim(trace=True, tracebackup=False)
+    tb.run_sim(time)
+    ram_dump_file(mem, name + "_ram_dump.txt")
+    if ram_test(mem, testFile) == 0:
+        print("ok")
+
+    tb.quit_sim()
+    mem = []
+
+
+class cpuTest:
+    def __init__(self, folderPath):
+        self.confFileName = "config.yml"
+        self.folderPath = folderPath
+        self.tests = []
+        self.readTestsFromConf()
+
+        for i in self.tests:
+            self.getTestFilesFromTestName(i)
+
+    def readTestsFromConf(self):
+        try:
+            with open(path.join(self.folderPath, self.confFileName), "r") as file:
+                conf = yaml.load(file, Loader=yaml.FullLoader)
+                self.tests = conf["test_files"]
+                return
+        except FileNotFoundError:
+            print("%s: file not found" % self.confFileName)
+            return False
+
+    def getTestFilesFromTestName(self, name):
+        romFile = path.join(self.folderPath, "hack", name + ".hack")
+        if path.exists(romFile) == False:
+            print("%s: file not found" % romFile)
+            return False
+
+        tstFolder = path.join(self.folderPath, "tests", name + "/")
+        if path.exists(romFile) == False:
+            print("%s: dir not found" % tstFolder)
+            return False
+
+        tests = []
+        for file in listdir(tstFolder):
+            if "_in.mif" in file:
+                tstName = file[:-7]
+                mif = path.join(tstFolder, file)
+                tst = path.join(tstFolder, tstName + "_tst.mif")
+                tests.append(
+                    {
+                        "name": tstName,
+                        "romFile": romFile,
+                        "ramFile": mif,
+                        "tstFile": tst,
+                    }
+                )
+
+        for t in tests:
+            run_cpu_test(
+                t["name"],
+                t["ramFile"],
+                t["romFile"],
+                t["tstFile"],
+                100000,
+            )
+
+
 if __name__ == "__main__":
     print("---- cpu ----")
-    tb = test_cpu(
-        "add_nasm/add0_in.mif",
-        "add_nasm/add.hack",
-    )
-    tb.config_sim(trace=True, tracebackup=False)
-    tb.run_sim(300)
-    ram_dump_file(mem, "add_nasm/add.out")
-    ram_test(mem, "add_nasm/add0_tst.mif")
+    test = cpuTest("tstAssembly")
+    # run_cpu_test(
+    #    "add0",
+    #    "tstAssembly/tests/add/add0_in.mif",
+    #    "tstAssembly/hack/add.hack",
+    #    "tstAssembly/tests/add/add0_tst.mif",
+    #    300,
+    # )
+    #

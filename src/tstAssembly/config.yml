@@ -1,0 +1,17 @@
+test_files:
+- add
+- sub
+- mov
+- abs
+- max
+- mult
+- mod
+- div
+- isEven
+
+not_working:
+- vectorMean
+- palindromo
+- stringLength
+- factorial
+- pow
