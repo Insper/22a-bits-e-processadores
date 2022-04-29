@@ -11,10 +11,10 @@ def cpu(inMem, instruction, outMem, addressM, writeM, pcount, rst, clk):
     reg_d = Signal(intbv(0)[16:])
     reg_a = Signal(intbv(0)[16:])
 
-    ula_x = Signal(intbv(1)[16:])
-    ula_y = Signal(intbv(2)[16:])
+    ula_x = Signal(intbv(0)[16:])
+    ula_y = Signal(intbv(0)[16:])
     ula_out = Signal(intbv(0)[16:])
-    ula_ctr = Signal(intbv(0))
+    ula_ctr = Signal(intbv(0)[6:])
     ula_zr = Signal(bool(0))
     ula_ng = Signal(bool(0))
 
@@ -31,7 +31,7 @@ def cpu(inMem, instruction, outMem, addressM, writeM, pcount, rst, clk):
 
     @always_comb
     def controlUnit():
-        ula_ctr.next = instruction[12:7]
+        ula_ctr.next = instruction[13:7]
         if instruction[13] == 1:
             ula_y.next = inMem
         else:
@@ -39,19 +39,21 @@ def cpu(inMem, instruction, outMem, addressM, writeM, pcount, rst, clk):
 
         ula_x.next = reg_d
 
-        jmp = 0
+        jmp = False
         if instruction[17] == 1 and instruction[3:0] > 0:
             if instruction[0] == 1:
                 if ula_ng == 0 and ula_zr == 0:
-                    jmp = jmp + 1
+                    jmp = True
             if instruction[1] == 1:
-                if ula_ng == 0 and ula_zr == 1:
-                    jmp = jmp + 1
+                if ula_zr == 1:
+                    jmp = True
             if instruction[2] == 1:
-                if ula_ng == 1 and ula_zr == 0:
-                    jmp = jmp + 1
+                if ula_ng == 1:
+                    jmp = True
+            if instruction[3:0] == 0b111:
+                jmp = True
 
-        if jmp != 0:
+        if jmp:
             pc_load.next = 1
         else:
             pc_load.next = 0

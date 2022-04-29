@@ -4,7 +4,7 @@ from myhdl import block, always_comb, Signal, intbv, modbv, instances, ConcatSig
 
 
 @block
-def ula(x, y, c, zr, ng, saida):
+def ula(x, y, c, zr, ng, saida, width=16):
 
     zx_out = Signal(intbv(0))
     nx_out = Signal(intbv(0))
@@ -31,7 +31,7 @@ def ula(x, y, c, zr, ng, saida):
     add = add16(nx_out, ny_out, add_out)
 
     no = inversor(c_no, mux_out, no_out)
-    comp = comparador(no_out, zr, ng)
+    comp = comparador(no_out, zr, ng, width)
 
     @always_comb
     def comb():
@@ -60,12 +60,12 @@ def inversor(z, a, y):
 
 
 @block
-def comparador(a, zr, ng):
+def comparador(a, zr, ng, width):
     @always_comb
     def comb():
         ng.next = 0
         zr.next = 0
-        if a < 0:
+        if int(a[16:].signed()) < 0:
             ng.next = 1
             zr.next = 0
         if a == 0:
