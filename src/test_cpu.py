@@ -7,6 +7,40 @@ from cpu import *
 from sequencial import *
 
 
+@block
+def test_cpu(mem, inRamMif, inRomHack, lst_data):
+    instruction = Signal(intbv(0)[18:])
+    inMem, outMem = [Signal(intbv(15)[16:]) for i in range(2)]
+    pcount, addressM = [Signal(intbv(0)[15:]) for i in range(2)]
+    writeM, clk = [Signal(bool(0)) for i in range(2)]
+    clkMem = Signal(bool(0))
+    rst = Signal(bool(0))
+
+    cpu_1 = cpu(
+        inMem, instruction, outMem, addressM, writeM, pcount, rst, clk, lst_data
+    )
+    ram_1 = ram_sim(
+        mem, inMem, outMem, addressM, writeM, clkMem, inRamMif, depth=2**15 - 1
+    )
+    rom_1 = rom_sim(instruction, pcount, clk, inRomHack)
+
+    @always(delay(10))
+    def clkgen():
+        clk.next = not clk
+
+    @always(delay(5))
+    def clkgenMem():
+        clkMem.next = not clkMem
+
+    @instance
+    def rst():
+        rst.next = 1
+        yield delay(5)
+        rst.next = 0
+
+    return instances()
+
+
 def rom_init_from_hack(fileName):
     with open(fileName) as f:
         return [int(l, 2) for l in f.read().splitlines()]
@@ -27,7 +61,7 @@ def ram_init_from_mif(mem, fileName):
                 init = True
 
 
-def ram_dump_file(mem, outFile):
+def mem_dump_file(mem, outFile):
 
     with open(outFile, "w") as f:
         for idx, x in enumerate(mem):
@@ -72,7 +106,7 @@ def ram_clear(mem, depth):
 
 
 @block
-def ram_sim(mem, dout, din, addr, we, clk, mifFile, width=16, depth=128, dump=True):
+def ram_sim(mem, dout, din, addr, we, clk, mifFile, width=16, depth=128):
     ram_init_from_mif(mem, mifFile)
 
     @always(clk.posedge)
@@ -82,103 +116,6 @@ def ram_sim(mem, dout, din, addr, we, clk, mifFile, width=16, depth=128, dump=Tr
         dout.next = mem[addr.val]
 
     return instances()
-
-
-# TODO: Edu consegue debugar isso e entender pq não funciona?
-# com o dicionário, ele muda o valor do nada na execucao
-# com dic seria bem melhor, pq conseuguimos exportar somente
-# o que foi alterado, e ocupamos muito menos memória
-@block
-def ram_sim2(dout, din, addr, we, clk, mifFile, width=16, depth=128):
-    memory = {}
-    ram_init_from_mif(memory, mifFile)
-    print("----init ")
-
-    @always(clk.posedge)
-    def access():
-        if we:
-            memory[int(addr.val)] = din.val
-        else:
-            if int(addr.val) in memory.keys():
-                dout.next = memory[int(addr.val)]
-            else:
-                dout.next = 0
-
-    return access
-
-
-@block
-def test_cpu(mem, inRamMif, inRomHack, lst_data):
-    instruction = Signal(intbv(0)[18:])
-    inMem, outMem = [Signal(intbv(15)[16:]) for i in range(2)]
-    pcount, addressM = [Signal(intbv(0)[15:]) for i in range(2)]
-    writeM, clk = [Signal(bool(0)) for i in range(2)]
-    clkMem = Signal(bool(0))
-    rst = Signal(bool(0))
-
-    cpu_1 = cpu(
-        inMem, instruction, outMem, addressM, writeM, pcount, rst, clk, lst_data
-    )
-    ram_1 = ram_sim(
-        mem, inMem, outMem, addressM, writeM, clkMem, inRamMif, depth=2**15 - 1
-    )
-    rom_1 = rom_sim(instruction, pcount, clk, inRomHack)
-
-    @always(delay(10))
-    def clkgen():
-        clk.next = not clk
-
-    @always(delay(5))
-    def clkgenMem():
-        clkMem.next = not clkMem
-
-    @instance
-    def rst():
-        rst.next = 1
-        yield delay(5)
-        rst.next = 0
-
-    return instances()
-
-
-def lstHeader():
-    h = []
-    h.append("ps")
-    h.append("clock")
-    h.append("instruction")
-    h.append("pcout")
-    h.append("s_regDout")
-    h.append("s_regSout")
-    h.append("s_regAout")
-    h.append("c_muxALUI_A")
-    h.append("c_muxSD_ALU")
-    h.append("outM")
-    h.append("writeM")
-    h.append("inM")
-    return h
-
-
-def lstWrite(lstFile, data, lstHeader):
-    f = open(lstFile, "w")
-    f.write(tabulate(data, headers=lstHeader, tablefmt="plain"))
-    f.close()
-
-
-def run_cpu_test(name, inRamMif, inRomHack, testFile, time):
-    print("--- %s ---" % name)
-    mem = [Signal(intbv(0)) for i in range(2**15 - 1)]
-    lst_data = []
-    tb = test_cpu(mem, inRamMif, inRomHack, lst_data)
-    tb.config_sim(trace=True, tracebackup=False)
-    tb.run_sim(time)
-    ram_dump_file(mem, path.join("tstAssembly", name + "_ram_dump.txt"))
-    if ram_test(mem, testFile) == 0:
-        print("ok")
-
-    breakpoint()
-    lstWrite("SIM.lst", lst_data, lstHeader())
-    tb.quit_sim()
-    mem = []
 
 
 class cpuTest:
@@ -191,6 +128,54 @@ class cpuTest:
         for i in self.tests:
             self.getTestFilesFromTestName(i)
 
+    def lstHeader(self):
+        h = []
+        h.append("ps")
+        h.append("clock")
+        h.append("instruction")
+        h.append("pcout")
+        h.append("s_regDout")
+        h.append("s_regSout")
+        h.append("s_regAout")
+        h.append("c_muxALUI_A")
+        h.append("c_muxSD_ALU")
+        h.append("outM")
+        h.append("writeM")
+        h.append("inM")
+        return h
+
+    def lstWrite(self, data, lstFile):
+        f = open(lstFile, "w")
+        f.write(tabulate(data, headers=self.lstHeader(), tablefmt="plain"))
+        f.close()
+
+    def run_cpu_test(self, tstFolder, name, inRamMif, inRomHack, testFile, time):
+        print("--- %s ---" % name)
+        mem = [Signal(intbv(0)) for i in range(2**15 - 1)]
+        lst_data = []
+        tb = test_cpu(mem, inRamMif, inRomHack, lst_data)
+        tb.config_sim(trace=True, tracebackup=False)
+        tb.run_sim(time)
+        mem_dump_file(mem, path.join(tstFolder, name + "_ram_dump.txt"))
+        if ram_test(mem, testFile) == 0:
+            print("ok")
+        self.lstWrite(lst_data, path.join(tstFolder, name + ".lst"))
+        tb.quit_sim()
+        mem = []
+
+    def configPaths(self, name):
+        romFile = path.join(self.folderPath, "hack", name + ".hack")
+        if path.exists(romFile) == False:
+            print("%s: file not found" % romFile)
+            return False
+
+        tstFolder = path.join(self.folderPath, "tests", name + "/")
+        if path.exists(tstFolder) == False:
+            print("%s: dir not found" % tstFolder)
+            return False
+
+        return romFile, tstFolder
+
     def readTestsFromConf(self):
         try:
             with open(path.join(self.folderPath, self.confFileName), "r") as file:
@@ -202,15 +187,8 @@ class cpuTest:
             return False
 
     def getTestFilesFromTestName(self, name):
-        romFile = path.join(self.folderPath, "hack", name + ".hack")
-        if path.exists(romFile) == False:
-            print("%s: file not found" % romFile)
-            return False
 
-        tstFolder = path.join(self.folderPath, "tests", name + "/")
-        if path.exists(romFile) == False:
-            print("%s: dir not found" % tstFolder)
-            return False
+        romFile, tstFolder = self.configPaths(name)
 
         tests = []
         for file in listdir(tstFolder):
@@ -228,7 +206,8 @@ class cpuTest:
                 )
 
         for t in tests:
-            run_cpu_test(
+            self.run_cpu_test(
+                tstFolder,
                 t["name"],
                 t["ramFile"],
                 t["romFile"],
