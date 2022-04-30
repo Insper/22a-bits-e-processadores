@@ -1,5 +1,13 @@
+not_working:
+
+- vectorMean
+- factorial
+
+
 test_files:
 - add
+
+disabled:
 - sub
 - mov
 - abs
@@ -8,10 +16,6 @@ test_files:
 - mod
 - div
 - isEven
-
-not_working:
-- vectorMean
-- palindromo
-- stringLength
-- factorial
 - pow
+- stringLength
+- palindromo
