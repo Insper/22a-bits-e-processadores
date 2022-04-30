@@ -6,36 +6,8 @@ from sequencial import pc
 from tabulate import tabulate
 
 
-def lstHeader():
-    h = []
-    h.append("ps")
-    h.append("clock")
-    h.append("instruction")
-    h.append("pcout")
-    h.append("s_regDout")
-    h.append("s_regSout")
-    h.append("s_regAout")
-    h.append("c_muxALUI_A")
-    h.append("c_muxSD_ALU")
-    h.append("outM")
-    h.append("writeM")
-    h.append("inM")
-    return h
-
-
-def lstWrite(lstFile, data, lstHeader):
-    f = open(lstFile, "w")
-    f.write(tabulate(data, headers=lstHeader, tablefmt="plain"))
-    f.close()
-
-
 @block
-def cpu(
-    inMem, instruction, outMem, addressM, writeM, pcount, rst, clk, lstFile="SIM.lst"
-):
-
-    lst_data = []
-    lst_cnt = 0
+def cpu(inMem, instruction, outMem, addressM, writeM, pcount, rst, clk, lst_data):
 
     reg_d = Signal(intbv(0)[16:])
     reg_a = Signal(intbv(0)[16:])
@@ -123,7 +95,5 @@ def cpu(
             bin(inMem, 16),
         ]
         lst_data.append(data)
-
-        lstWrite(lstFile, lst_data, lstHeader())
 
     return instances()

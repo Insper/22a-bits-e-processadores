@@ -108,7 +108,7 @@ def ram_sim2(dout, din, addr, we, clk, mifFile, width=16, depth=128):
 
 
 @block
-def test_cpu(mem, inRamMif, inRomHack):
+def test_cpu(mem, inRamMif, inRomHack, lst_data):
     instruction = Signal(intbv(0)[18:])
     inMem, outMem = [Signal(intbv(15)[16:]) for i in range(2)]
     pcount, addressM = [Signal(intbv(0)[15:]) for i in range(2)]
@@ -116,7 +116,9 @@ def test_cpu(mem, inRamMif, inRomHack):
     clkMem = Signal(bool(0))
     rst = Signal(bool(0))
 
-    cpu_1 = cpu(inMem, instruction, outMem, addressM, writeM, pcount, rst, clk)
+    cpu_1 = cpu(
+        inMem, instruction, outMem, addressM, writeM, pcount, rst, clk, lst_data
+    )
     ram_1 = ram_sim(
         mem, inMem, outMem, addressM, writeM, clkMem, inRamMif, depth=2**15 - 1
     )
@@ -139,10 +141,34 @@ def test_cpu(mem, inRamMif, inRomHack):
     return instances()
 
 
+def lstHeader():
+    h = []
+    h.append("ps")
+    h.append("clock")
+    h.append("instruction")
+    h.append("pcout")
+    h.append("s_regDout")
+    h.append("s_regSout")
+    h.append("s_regAout")
+    h.append("c_muxALUI_A")
+    h.append("c_muxSD_ALU")
+    h.append("outM")
+    h.append("writeM")
+    h.append("inM")
+    return h
+
+
+def lstWrite(lstFile, data, lstHeader):
+    f = open(lstFile, "w")
+    f.write(tabulate(data, headers=lstHeader, tablefmt="plain"))
+    f.close()
+
+
 def run_cpu_test(name, inRamMif, inRomHack, testFile, time):
     print("--- %s ---" % name)
     mem = [Signal(intbv(0)) for i in range(2**15 - 1)]
-    tb = test_cpu(mem, inRamMif, inRomHack)
+    lst_data = []
+    tb = test_cpu(mem, inRamMif, inRomHack, lst_data)
     tb.config_sim(trace=True, tracebackup=False)
     tb.run_sim(time)
     ram_dump_file(mem, path.join("tstAssembly", name + "_ram_dump.txt"))
@@ -150,7 +176,7 @@ def run_cpu_test(name, inRamMif, inRomHack, testFile, time):
         print("ok")
 
     breakpoint()
-
+    lstWrite("SIM.lst", lst_data, lstHeader())
     tb.quit_sim()
     mem = []
 
