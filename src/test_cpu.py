@@ -123,8 +123,9 @@ class cpuTest:
         self.confFileName = "config.yml"
         self.folderPath = folderPath
         self.tests = []
-        self.readTestsFromConf()
+        self.testsConfig = []
 
+        self.readTestsFromConf()
         for i in self.tests:
             self.getTestFilesFromTestName(i)
 
@@ -190,14 +191,14 @@ class cpuTest:
 
         romFile, tstFolder = self.configPaths(name)
 
-        tests = []
         for file in listdir(tstFolder):
             if "_in.mif" in file:
                 tstName = file[:-7]
                 mif = path.join(tstFolder, file)
                 tst = path.join(tstFolder, tstName + "_tst.mif")
-                tests.append(
+                self.testsConfig.append(
                     {
+                        "tstFolder": tstFolder,
                         "name": tstName,
                         "romFile": romFile,
                         "ramFile": mif,
@@ -205,9 +206,10 @@ class cpuTest:
                     }
                 )
 
-        for t in tests:
+    def run(self):
+        for t in self.testsConfig:
             self.run_cpu_test(
-                tstFolder,
+                t["tstFolder"],
                 t["name"],
                 t["ramFile"],
                 t["romFile"],
@@ -219,6 +221,7 @@ class cpuTest:
 if __name__ == "__main__":
     print("---- cpu ----")
     test = cpuTest("tstAssembly")
+    test.run()
     # run_cpu_test(
     #    "add0",
     #    "tstAssembly/tests/add/add0_in.mif",
