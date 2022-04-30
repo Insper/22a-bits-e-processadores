@@ -3,10 +3,39 @@
 from myhdl import *
 from ula import *
 from sequencial import pc
+from tabulate import tabulate
+
+
+def lstHeader():
+    h = []
+    h.append("ps")
+    h.append("clock")
+    h.append("instruction")
+    h.append("pcout")
+    h.append("s_regDout")
+    h.append("s_regSout")
+    h.append("s_regAout")
+    h.append("c_muxALUI_A")
+    h.append("c_muxSD_ALU")
+    h.append("outM")
+    h.append("writeM")
+    h.append("inM")
+    return h
+
+
+def lstWrite(lstFile, data, lstHeader):
+    f = open(lstFile, "w")
+    f.write(tabulate(data, headers=lstHeader, tablefmt="plain"))
+    f.close()
 
 
 @block
-def cpu(inMem, instruction, outMem, addressM, writeM, pcount, rst, clk):
+def cpu(
+    inMem, instruction, outMem, addressM, writeM, pcount, rst, clk, lstFile="SIM.lst"
+):
+
+    lst_data = []
+    lst_cnt = 0
 
     reg_d = Signal(intbv(0)[16:])
     reg_a = Signal(intbv(0)[16:])
@@ -72,5 +101,29 @@ def cpu(inMem, instruction, outMem, addressM, writeM, pcount, rst, clk):
                 reg_d.next = ula_out
             else:
                 reg_d.next = reg_d
+
+    @always(clk.posedge)
+    def lst():
+        muxALUIA = 0
+        if instruction[17] == 1:
+            muxALUIA = 1
+
+        data = [
+            0,
+            bin(clk.val, 1),
+            bin(instruction.val, 18),
+            bin(pcount, 16),
+            bin(reg_d, 16),
+            bin(0, 16),
+            bin(reg_a, 16),
+            bin(muxALUIA, 1),
+            bin(0, 1),
+            bin(ula_out, 16),
+            bin(writeM, 1),
+            bin(inMem, 16),
+        ]
+        lst_data.append(data)
+
+        lstWrite(lstFile, lst_data, lstHeader())
 
     return instances()

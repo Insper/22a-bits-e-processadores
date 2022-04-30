@@ -145,9 +145,11 @@ def run_cpu_test(name, inRamMif, inRomHack, testFile, time):
     tb = test_cpu(mem, inRamMif, inRomHack)
     tb.config_sim(trace=True, tracebackup=False)
     tb.run_sim(time)
-    ram_dump_file(mem, name + "_ram_dump.txt")
+    ram_dump_file(mem, path.join("tstAssembly", name + "_ram_dump.txt"))
     if ram_test(mem, testFile) == 0:
         print("ok")
+
+    breakpoint()
 
     tb.quit_sim()
     mem = []
@@ -205,7 +207,7 @@ class cpuTest:
                 t["ramFile"],
                 t["romFile"],
                 t["tstFile"],
-                100000,
+                10000,
             )
 
 
