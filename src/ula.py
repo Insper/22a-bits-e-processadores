@@ -6,14 +6,14 @@ from myhdl import block, always_comb, Signal, intbv, modbv, instances, ConcatSig
 @block
 def ula(x, y, c, zr, ng, saida, width=16):
 
-    zx_out = Signal(intbv(0))
-    nx_out = Signal(intbv(0))
-    zy_out = Signal(intbv(0))
-    ny_out = Signal(intbv(0))
-    and_out = Signal(intbv(0))
-    add_out = Signal(intbv(0))
-    mux_out = Signal(intbv(0))
-    no_out = Signal(intbv(0))
+    zx_out = Signal(intbv(0)[width:])
+    nx_out = Signal(intbv(0)[width:])
+    zy_out = Signal(intbv(0)[width:])
+    ny_out = Signal(intbv(0)[width:])
+    and_out = Signal(intbv(0)[width:])
+    add_out = Signal(intbv(0)[width:])
+    mux_out = Signal(intbv(0)[width:])
+    no_out = Signal(intbv(0)[width:])
 
     c_zx = c(5)
     c_nx = c(4)
