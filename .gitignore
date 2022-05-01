@@ -1,0 +1,14 @@
+.DS_Store
+.idea
+*.log
+tmp/
+
+
+*ram_dump.txt
+*.lst
+*__pycache__/
+*.vcd
+*env/
+
+E-Assembly/
+myhdl2dot/
