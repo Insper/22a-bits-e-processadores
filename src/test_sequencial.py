@@ -46,7 +46,8 @@ def test_ram():
 def test_pc():
 
     i, output = [Signal(intbv(0)) for i in range(2)]
-    inc, load, rst, clk = [Signal(bool(0)) for i in range(4)]
+    inc, load, clk = [Signal(bool(0)) for i in range(3)]
+    rst = ResetSignal(0, active=0, isasync=True)
     pc_0 = pc(inc, load, i, output, rst, clk)
 
     @always(delay(10))
@@ -173,7 +174,7 @@ def test_all():
     sim.quit()
 
     print("---- pc ----")
-    tb = traceSignals(test_pc)
+    tb = test_pc()
     sim = Simulation(tb)
     sim.run(500)
     sim.quit()

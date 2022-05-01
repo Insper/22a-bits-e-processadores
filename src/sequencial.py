@@ -33,17 +33,14 @@ def ram(dout, din, addr, we, clk, width=16, depth=128):
 
 @block
 def pc(increment, load, i, output, rst, clk):
-    @always(clk.posedge, rst.posedge)
+    @always_seq(clk.posedge, reset=rst)
     def logic():
-        if rst == 1:
-            output.next = 0
-        elif clk == 1:
-            if load == 1:
-                output.next = i
-            elif increment == 1:
-                output.next = output + 1
-            else:
-                output.next = output
+        if load == 1:
+            output.next = i
+        elif increment == 1:
+            output.next = output + 1
+        else:
+            output.next = output
 
     return logic
 
