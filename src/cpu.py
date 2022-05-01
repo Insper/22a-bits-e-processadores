@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 
 from myhdl import *
-from ula import *
+from ula import ula
 from sequencial import pc
-from tabulate import tabulate
 
 
 @block

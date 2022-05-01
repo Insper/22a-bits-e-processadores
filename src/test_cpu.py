@@ -2,6 +2,7 @@
 
 import yaml
 from os import path, listdir
+from tabulate import tabulate
 from myhdl import *
 from cpu import *
 from sequencial import *
@@ -214,7 +215,7 @@ class cpuTest:
                 t["ramFile"],
                 t["romFile"],
                 t["tstFile"],
-                10000,
+                50000,
             )
 
 
