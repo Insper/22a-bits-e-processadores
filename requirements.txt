@@ -2,3 +2,4 @@ myhdl
 pytest
 pyyaml
 tabulate
+click

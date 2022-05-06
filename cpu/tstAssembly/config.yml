@@ -6,8 +6,6 @@ not_working:
 
 test_files:
 - add
-
-disabled:
 - sub
 - mov
 - abs

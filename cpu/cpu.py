@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from myhdl import *
-from ula import ula
+from ula import *
 from sequencial import pc
 
 
