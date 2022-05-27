@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from myhdl import block, always_comb, Signal, intbv, modbv, instances, ConcatSignal, bin
+from myhdl import *
 
 
 @block

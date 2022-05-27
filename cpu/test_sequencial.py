@@ -184,8 +184,5 @@ def test_all():
     tb.run_sim(500)
 
 
-#    convert_ram(hdl="vhdl")
-
-
 if __name__ == "__main__":
     test_all()
