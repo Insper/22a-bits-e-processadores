@@ -1,36 +1,31 @@
-name: mkdocs
+name: ci
 on:
-  push:
-    branches:
-      - main
-
+  push
+  
 # Environment
 env:
   CI: true
   PYTHON_VERSION: 3.x
 
-# Jobs to run
 jobs:
      
-  # Build and deploy documentation site
   deploy:
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
 
       # Checkout source form GitHub
       - uses: actions/checkout@v2
+      - run: |
+          git submodule update --init --recursive
 
-      # Install Python runtime and dependencies
       - uses: actions/setup-python@v1
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
-      # pip
       - run: |
           pip install -r requirements-mkdocs.txt
-          pip install mkdocs-minify-plugin>=0.2
-          
-      # deploy
+
       - run: |
           mkdocs gh-deploy --force
           mkdocs --version
