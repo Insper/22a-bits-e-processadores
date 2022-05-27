@@ -19,10 +19,14 @@ repo_url: 'https://github.com/insper/bitseproc'
 
 copyright: 'Copyright &copy; Rafael Corsi @ insper'
 
+extra_css:
+  - https://cdn.jsdelivr.net/gh/insper-education/active-handout-css@main/devlife.css
+
 extra_javascript:
   - https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.0.0/js-yaml.min.js
   - https://polyfill.io/v3/polyfill.min.js?features=es6
   - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+  - https://cdn.jsdelivr.net/gh/insper-education/active-handout-plugins-js@main/package/plugin-bundle.js
 
 plugins:
   - search
@@ -84,6 +88,7 @@ nav:
   - 'Sobre-Criterios-de-Avaliacao.md'
   - 'Sobre-Rubricas.md'
 
+
 #- 'Util-Aulas.md'
 #- '21a/Avaliacoes.md'
 #
@@ -132,30 +137,30 @@ nav:
 #    - 'VMtranslator-Lab-1-old.md'
 #    - 'VMtranslator-Lab-1.md'
 #
-#- 'Teoria':
-#  - 'Teoria-Dados.md'
-#  - 'Teoria-Algebra-Booleana.md'
-#  - 'Teoria-CMOS.md'
-#  - 'Teoria-RTL.md'
-#  - 'Teoria-Componentes.md'
-#  - 'Teoria-Aritmetica-Binaria.md'
-#  - 'Teoria-Aritmetica-Binaria-HW.md'
-#  - 'Teoria-ULA.md'
-#  - 'Teoria-Logica-Sequencial.md'
-#  - 'Teoria-Sequencial-Componentes.md'
-#  - 'Teoria-Z01.md'
-#  - 'Teoria-Assembly.md'
-#  - 'Teoria-Z01-mapadeMemoria.md'
-#  - 'Teoria-nasm-jump.md'
-#  - 'Teoria-Linguagem-de-Maquina.md'
-#  - 'Teoria-Assembler.md'
-#  - 'assembler-Dicas-SymbolTable.md'
-#  - 'Teoria-vm.md'
-#  - 'Teoria-vm-segmentos.md'
-#  - 'Teoria-vm-jump.md'
-#  - 'Teoria-vm-funcoes.md'
-#  - 'Teoria-vm-memoria.md'
-#  - 'Vídeo Aulas (Luciano)': 'Util-Video-Aulas.md'
+- 'Teoria':
+  - 'commum-content/teoria/Teoria-Dados.md'
+#  - 'commum-content/teoria/Teoria-Algebra-Booleana.md'
+#  - 'commum-content/teoria/Teoria-CMOS.md'
+#  - 'commum-content/teoria/Teoria-RTL.md'
+#  - 'commum-content/teoria/Teoria-Componentes.md'
+#  - 'commum-content/teoria/Teoria-Aritmetica-Binaria.md'
+#  - 'commum-content/teoria/Teoria-Aritmetica-Binaria-HW.md'
+#  - 'commum-content/teoria/Teoria-ULA.md'
+#  - 'commum-content/teoria/Teoria-Logica-Sequencial.md'
+#  - 'commum-content/teoria/Teoria-Sequencial-Componentes.md'
+#  - 'commum-content/teoria/Teoria-Z01.md'
+#  - 'commum-content/teoria/Teoria-Assembly.md'
+#  - 'commum-content/teoria/Teoria-Z01-mapadeMemoria.md'
+#  - 'commum-content/teoria/Teoria-nasm-jump.md'
+#  - 'commum-content/teoria/Teoria-Linguagem-de-Maquina.md'
+#  - 'commum-content/teoria/Teoria-Assembler.md'
+#  - 'commum-content/teoria/assembler-Dicas-SymbolTable.md'
+#  - 'commum-content/teoria/Teoria-vm.md'
+#  - 'commum-content/teoria/Teoria-vm-segmentos.md'
+#  - 'commum-content/teoria/Teoria-vm-jump.md'
+#  - 'commum-content/teoria/Teoria-vm-funcoes.md'
+#  - 'commum-content/teoria/Teoria-vm-memoria.md'
+#  - 'commum-content/teoria/Vídeo Aulas (Luciano)': 'Util-Video-Aulas.md'
 #
 #- 'VHDL':
 #  - 'VHDL-basico.md'
