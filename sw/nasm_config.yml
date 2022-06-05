@@ -1,7 +1,8 @@
 config:
   name: 'Testando o teste ?'
-  inDir: 'assembly'
-  outDir: 'hack'
+  nasmDir: 'assembly'
+  hackDir: 'hack'
+  tstDir: 'tests'
 
 not_working:
 

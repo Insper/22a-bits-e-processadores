@@ -2,7 +2,6 @@
 
 import click
 import yaml
-from tabulate import tabulate
 from myhdl import *
 import sys
 import os.path
@@ -27,8 +26,9 @@ class configFile:
         self.config = ""
         self.tests = ""
         self.name = ""
-        self.inDir = ""
-        self.outDir = ""
+        self.nasmDir = ""
+        self.hackDir = ""
+        self.tstDir = ""
         self.workDir = ""
         self.open(configFile)
 
@@ -39,10 +39,9 @@ class configFile:
                 self.tests = self.config["test_files"]
                 self.name = self.config["config"]["name"]
                 self.workDir = os.path.dirname(os.path.abspath(configFile))
-                inDir = self.config["config"]["inDir"]
-                outDir = self.config["config"]["outDir"]
-                self.inDir = path.join(self.workDir, inDir)
-                self.outDir = path.join(self.workDir, outDir)
+                self.nasmDir = path.join(self.workDir, self.config["config"]["nasmDir"])
+                self.hackDir = path.join(self.workDir, self.config["config"]["hackDir"])
+                self.tstDir = path.join(self.workDir, self.config["config"]["tstDir"])
         except FileNotFoundError:
             print("%s: file not found" % self.confFileName)
             return False
@@ -52,103 +51,63 @@ class configFile:
 
 
 class cpuTest:
-    def __init__(self, folderPath):
-        self.confFileName = "config.yml"
-        self.folderPath = folderPath
-        self.tests = []
+    def __init__(self):
+        self.config = ""
         self.testsConfig = []
+        self.mem = []
+        self.lst_data = []
 
-        self.readTestsFromConf()
-        for i in self.tests:
-            self.getTestFilesFromTestName(i)
+    def updateConfig(self, config):
+        self.lst_data = []
+        self.mem = []
+        self.config = config
 
-    def lstHeader(self):
-        h = []
-        h.append("ps")
-        h.append("clock")
-        h.append("instruction")
-        h.append("pcout")
-        h.append("s_regDout")
-        h.append("s_regSout")
-        h.append("s_regAout")
-        h.append("c_muxALUI_A")
-        h.append("c_muxSD_ALU")
-        h.append("outM")
-        h.append("writeM")
-        h.append("inM")
-        return h
+    def baseAddress(self, folder, name):
+        return path.join(folder, name)
 
-    def lstWrite(self, data, lstFile):
-        f = open(lstFile, "w")
-        f.write(tabulate(data, headers=self.lstHeader(), tablefmt="plain"))
-        f.close()
-
-    def run_cpu_test(self, tstFolder, name, inRamMif, inRomHack, testFile, time):
-        print("--- %s ---" % name)
-        mem = [Signal(intbv(0)) for i in range(2**15 - 1)]
-        lst_data = []
-        tb = z01_sim(mem, inRamMif, inRomHack, lst_data)
-        tb.config_sim(trace=True, tracebackup=False)
-        tb.run_sim(time)
-        mem_dump_file(mem, path.join(tstFolder, name + "_ram_dump.txt"))
-        if ram_test(mem, testFile) == 0:
-            print("ok")
-        self.lstWrite(lst_data, path.join(tstFolder, name + ".lst"))
-        tb.quit_sim()
-        mem = []
-
-    def configPaths(self, name):
-        romFile = path.join(self.folderPath, "hack", name + ".hack")
-        if path.exists(romFile) == False:
-            print("%s: file not found" % romFile)
-            return False
-
-        tstFolder = path.join(self.folderPath, "tests", name + "/")
-        if path.exists(tstFolder) == False:
-            print("%s: dir not found" % tstFolder)
-            return False
-
-        return romFile, tstFolder
-
-    def readTestsFromConf(self):
-        try:
-            with open(path.join(self.folderPath, self.confFileName), "r") as file:
-                conf = yaml.load(file, Loader=yaml.FullLoader)
-                self.tests = conf["test_files"]
-                return
-        except FileNotFoundError:
-            print("%s: file not found" % self.confFileName)
-            return False
-
-    def getTestFilesFromTestName(self, name):
-
-        romFile, tstFolder = self.configPaths(name)
-
+    def getTestFilesFromTestName(self, tstFolder):
         for file in listdir(tstFolder):
             if "_in.mif" in file:
-                tstName = file[:-7]
+                name = file[:-7]
                 mif = path.join(tstFolder, file)
-                tst = path.join(tstFolder, tstName + "_tst.mif")
+                tst = path.join(tstFolder, name + "_tst.mif")
+                basePath = os.path.join(tstFolder, name) + "{}"
+                refMem = basePath.format("_tst.mif")
+                dumpMem = basePath.format("_ram_dump.txt")
+                inMem = basePath.format("_in.mif")
+                trace = basePath.format("")
                 self.testsConfig.append(
                     {
                         "tstFolder": tstFolder,
-                        "name": tstName,
-                        "romFile": romFile,
+                        "name": name,
                         "ramFile": mif,
                         "tstFile": tst,
+                        "basePath": basePath,
+                        "refMem": refMem,
+                        "dumpMem": dumpMem,
+                        "inMem": inMem,
+                        "trace": trace,
                     }
                 )
+        return self.testsConfig
 
     def run(self):
-        for t in self.testsConfig:
-            self.run_cpu_test(
-                t["tstFolder"],
-                t["name"],
-                t["ramFile"],
-                t["romFile"],
-                t["tstFile"],
-                50000,
-            )
+        print("--- %s ---" % self.config["name"])
+        self.mem = ram_init_from_mif(self.config["inMem"])
+        tb = z01_sim(self.mem, self.config["romFile"], self.lst_data)
+        tb.config_sim(trace=True, name=self.config["trace"], tracebackup=False)
+        tb.run_sim(self.config["runTime"])
+        tb.quit_sim()
+
+    def dump(self):
+        mem_dump_file(self.mem, self.config["dumpMem"])
+        lstWrite(self.lst_data, self.config["trace"])
+
+    def test(self, ref, dut):
+        if ram_test(ref, dut) == 0:
+            return 0
+        else:
+            return 1
 
 
 @click.group()
@@ -175,42 +134,64 @@ def from_dir(nasmpath, hackpath):
     assemblerFromDir(nasmpath, hackpath)
 
 
-@click.argument("configfile", type=click.Path("r"))
+@click.argument("tstfile", type=click.Path("r"))
 @assembler.command()
-def from_config(configfile):
-    conf = configFile(configfile)
-
-    helpers.createDir(conf.outDir)
+def from_config(tstfile):
+    conf = configFile(tstFile)
+    helpers.createDir(conf.hackDir)
 
     print(" 1/1 gerando novos arquivos .hackpath")
-    print(" destine: {}".format(conf.outDir))
+    print(" destine: {}".format(conf.hackDir))
 
     for n in conf.getTests():
-        fNasm = open(path.join(conf.inDir, n + ".nasm"), "r")
-        fHack = open(path.join(conf.outDir, n + ".hack"), "w")
-        helpers.createDir(conf.outDir)
+        fNasm = open(path.join(conf.nasmDir, n + ".nasm"), "r")
+        fHack = open(path.join(conf.hackDir, n + ".hack"), "w")
         assembler = Assembler(fNasm, fHack)
         print("\t" + n + ".hack")
 
 
-@click.argument("name")
-@click.argument("inram")
-@click.argument("inrom")
-@click.argument("intst")
-@click.argument("time")
+@click.argument("time", default=50000)
+@click.argument("path")
+@click.argument("nasm")
 @hw.command()
-def run_single(name, inram, inrom, intst, time):
-    print("---- cpu ----")
-    test = cpuTest("")
-    test.run_cpu_test("", name, inram, inrom, intst, int(time))
+def from_dir(nasm, path, time):
+    cpu = cpuTest()
+    tests = cpu.getTestFilesFromTestName(path)
+    for config in tests:
+        config["romFile"] = nasm
+        config["runTime"] = time
+        cpu.updateConfig(config)
+        cpu.run()
+        cpu.dump()
+        memRef = ram_init_from_mif(config["refMem"], False, False)
+        memDump = ram_init_from_mif(config["dumpMem"], False, False)
+        if cpu.test(memRef, memDump) == 0:
+            print("pass")
+        else:
+            print("fail")
 
 
-@click.argument("tstfolder")
+# TODO estruturar codigo compartilhado
+@click.argument("tstfile", type=click.Path("r"))
 @hw.command()
-def all(tstfolder):
-    print("---- cpu ----")
-    test = cpuTest(tstfolder)
-    test.run()
+def from_config(tstfile):
+    conf = configFile(tstfile)
+    for n in conf.getTests():
+        cpu = cpuTest()
+        path = os.path.join(conf.tstDir, n)
+        tests = cpu.getTestFilesFromTestName(path)
+        for config in tests:
+            config["romFile"] = os.path.join(conf.hackDir, n) + ".hack"
+            config["runTime"] = 50000
+            cpu.updateConfig(config)
+            cpu.run()
+            cpu.dump()
+            memRef = ram_init_from_mif(config["refMem"], False, False)
+            memDump = ram_init_from_mif(config["dumpMem"], False, False)
+            if cpu.test(memRef, memDump) == 0:
+                print("pass")
+            else:
+                print("fail")
 
 
 @click.group()

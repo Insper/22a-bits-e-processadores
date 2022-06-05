@@ -18,7 +18,7 @@ def z01_convert():
 
 
 @block
-def z01_sim(mem, inRamMif, inRomHack, lst_data):
+def z01_sim(mem, inRomHack, lst_data):
     instruction = Signal(intbv(0)[18:])
     inMem, outMem = [Signal(intbv(15)[16:]) for i in range(2)]
     pcount, addressM = [Signal(intbv(0)[15:]) for i in range(2)]
@@ -29,9 +29,7 @@ def z01_sim(mem, inRamMif, inRomHack, lst_data):
     cpu_1 = cpu(
         inMem, instruction, outMem, addressM, writeM, pcount, rst, clk, lst_data
     )
-    ram_1 = ram_sim(
-        mem, inMem, outMem, addressM, writeM, clkMem, inRamMif, depth=2**15 - 1
-    )
+    ram_1 = ram_sim(mem, inMem, outMem, addressM, writeM, clkMem, depth=2**15 - 1)
     rom_1 = rom_sim(instruction, pcount, clk, inRomHack)
 
     @always(delay(10))
