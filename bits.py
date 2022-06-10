@@ -9,16 +9,10 @@ import os.path
 # TODO usar __init__ !
 sys.path.insert(0, "./hw")
 sys.path.insert(0, "./sw/assembler")
-from z01 import z01_sim
-from simulation import *
+from hw_util import *
 from assembler import Assembler
-from test_assembler import clearbin, assemblerFromDir
-
-
-class helpers:
-    def createDir(d):
-        if os.path.exists(d) == False:
-            os.makedirs(d)
+from util_assembler import clearbin, assemblerFromDir
+from test_z01 import test_z01
 
 
 class configFile:
@@ -31,6 +25,10 @@ class configFile:
         self.tstDir = ""
         self.workDir = ""
         self.open(configFile)
+
+    def createDir(self, d):
+        if os.path.exists(d) == False:
+            os.makedirs(d)
 
     def open(self, configFile):
         try:
@@ -50,66 +48,6 @@ class configFile:
         return self.tests
 
 
-class cpuTest:
-    def __init__(self):
-        self.config = ""
-        self.testsConfig = []
-        self.mem = []
-        self.lst_data = []
-
-    def updateConfig(self, config):
-        self.lst_data = []
-        self.mem = []
-        self.config = config
-
-    def baseAddress(self, folder, name):
-        return path.join(folder, name)
-
-    def getTestFilesFromTestName(self, tstFolder):
-        for file in listdir(tstFolder):
-            if "_in.mif" in file:
-                name = file[:-7]
-                mif = path.join(tstFolder, file)
-                tst = path.join(tstFolder, name + "_tst.mif")
-                basePath = os.path.join(tstFolder, name) + "{}"
-                refMem = basePath.format("_tst.mif")
-                dumpMem = basePath.format("_ram_dump.txt")
-                inMem = basePath.format("_in.mif")
-                trace = basePath.format("")
-                self.testsConfig.append(
-                    {
-                        "tstFolder": tstFolder,
-                        "name": name,
-                        "ramFile": mif,
-                        "tstFile": tst,
-                        "basePath": basePath,
-                        "refMem": refMem,
-                        "dumpMem": dumpMem,
-                        "inMem": inMem,
-                        "trace": trace,
-                    }
-                )
-        return self.testsConfig
-
-    def run(self):
-        print("--- %s ---" % self.config["name"])
-        self.mem = ram_init_from_mif(self.config["inMem"])
-        tb = z01_sim(self.mem, self.config["romFile"], self.lst_data)
-        tb.config_sim(trace=True, name=self.config["trace"], tracebackup=False)
-        tb.run_sim(self.config["runTime"])
-        tb.quit_sim()
-
-    def dump(self):
-        mem_dump_file(self.mem, self.config["dumpMem"])
-        lstWrite(self.lst_data, self.config["trace"])
-
-    def test(self, ref, dut):
-        if ram_test(ref, dut) == 0:
-            return 0
-        else:
-            return 1
-
-
 @click.group()
 def assembler():
     pass
@@ -120,8 +58,8 @@ def hw():
     pass
 
 
-@click.argument("hack", type=click.Path("w"))
-@click.argument("nasm", type=click.Path("r"))
+@click.argument("hack", type=click.File("w"))
+@click.argument("nasm", type=click.File("r"))
 @assembler.command()
 def from_nasm(nasm, hack):
     assembler = Assembler(nasm, hack)
@@ -137,8 +75,8 @@ def from_dir(nasmpath, hackpath):
 @click.argument("tstfile", type=click.Path("r"))
 @assembler.command()
 def from_config(tstfile):
-    conf = configFile(tstFile)
-    helpers.createDir(conf.hackDir)
+    conf = configFile(tstfile)
+    conf.createDir(conf.hackDir)
 
     print(" 1/1 gerando novos arquivos .hackpath")
     print(" destine: {}".format(conf.hackDir))
@@ -155,7 +93,7 @@ def from_config(tstfile):
 @click.argument("nasm")
 @hw.command()
 def from_dir(nasm, path, time):
-    cpu = cpuTest()
+    cpu = test_z01()
     tests = cpu.getTestFilesFromTestName(path)
     for config in tests:
         config["romFile"] = nasm
@@ -177,7 +115,7 @@ def from_dir(nasm, path, time):
 def from_config(tstfile):
     conf = configFile(tstfile)
     for n in conf.getTests():
-        cpu = cpuTest()
+        cpu = test_z01()
         path = os.path.join(conf.tstDir, n)
         tests = cpu.getTestFilesFromTestName(path)
         for config in tests:
@@ -208,13 +146,3 @@ cli.add_command(assembler)
 
 if __name__ == "__main__":
     cli()
-
-    # convert_cpu()
-    # run_cpu_test(
-    #    "add0",
-    #    "tstAssembly/tests/add/add0_in.mif",
-    #    "tstAssembly/hack/add.hack",
-    #    "tstAssembly/tests/add/add0_tst.mif",
-    #    300,
-    # )
-    #
