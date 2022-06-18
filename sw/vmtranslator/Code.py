@@ -49,6 +49,36 @@ class Code:
         if bootstrap or isDir:
             self.commandsToFile(commands)
 
+    def writeLabel(self, label):
+        commands = []
+        commands.append('; Label')
+        # add function name
+        commands.append(self.vmFileName + "." + label + ":")
+        self.commandsToFile(commands)
+
+    def writeGoto(self, label):
+        commands = []
+        commands.append("; Goto Incondicional")
+        # add function name
+        commands.append("leaw $" + self.vmFileName + "." + label + ",%A")
+        commands.append("jmp")
+        commands.append("nop")
+        self.commandsToFile(commands)
+
+    def writeIf(self, lavel):
+        commands = []
+        commands.add("; IF")
+        commands.add("leaw $SP,%A")
+        commands.add("movw (%A),%D")
+        commands.add("decw %D")
+        commands.add("movw %D,(%A)")
+        commands.add("movw (%A),%A")
+        commands.add("movw (%A),%D")
+        commands.add("leaw $" + self.vmFileName + "." + label + ",%A")
+        commands.add("jne %D")
+        commands.add("nop")
+        self.commandsToFile(commands)
+
     def writeArithmetic(self, command):
         commands = []
         if len(command) < 2:
@@ -284,6 +314,23 @@ class Code:
             commands.append("movw %D,(%A)")
 
         self.commandsToFile(commands)
+
+    def writeCall(self, funcName, numArgs):
+        commands = []
+        commands.add("; chamada de funcao: " + functionName)
+        # push return-address
+        commands.add("leaw $" + functionName + ".ret." + retHash.get(functionName) +
+                    ",%A");
+        commands.add("movw %A,%D");
+        commands.add("leaw $SP,%A");
+        commands.add("movw (%A),%A");
+        commands.add("movw %D,(%A)");
+        commands.add("leaw $SP,%A");
+        commands.add("movw (%A),%D");
+        commands.add("incw %D");
+        commands.add("movw %D,(%A)");
+
+
 
 addTestVector = [
             "leaw $SP,%A",

@@ -46,6 +46,12 @@ class VMTranslate:
                     elif current['type'] == 'C_PUSH':
                         code.writePush(current['command'],
                                        current['arg0'], current['arg1'])
+                    elif current['type'] == 'C_LABEL':
+                        code.writeLabel(current['arg0'])
+                    elif current['type'] == 'C_GOTO':
+                        code.writeGoto(current['arg0'])                        code.writeLabel(current['arg0'])
+                    elif current['type'] == 'C_IF':
+                        code.writeIf(current['arg0'])
 
     def run(self):
         self.getFiles()
