@@ -1,18 +1,22 @@
 import sys
 import click
-from SymbolTable import *
-from Code import *
-from Parser import *
+from ASMsymbolTable import SymbolTable
+from ASMcode import Code
+from ASMparser import Parser
 
 
-class Assembler:
+class ASM:
     def __init__(self, nasm, hack):
         self.hack = hack
         self.symbolTable = SymbolTable()
         self.parser = Parser(nasm)
         self.code = Code()
+
+
+    def run(self):
         self.fillSymbolTable()
         self.generateMachineCode()
+
 
     def fillSymbolTable(self):
 

@@ -9,10 +9,12 @@ import os.path
 # TODO usar __init__ !
 sys.path.insert(0, "./hw")
 sys.path.insert(0, "./sw/assembler")
+sys.path.insert(0, "./sw/vmtranslator")
 from hw_util import *
-from assembler import Assembler
-from util_assembler import clearbin, assemblerFromDir
+from ASM import ASM
+from ASMutil import ASMfromDir
 from test_z01 import test_z01
+from VMTranslate import VMTranslate
 
 
 class configFile:
@@ -27,7 +29,7 @@ class configFile:
         self.open(configFile)
 
     def createDir(self, d):
-        if os.path.exists(d) == False:
+        if os.path.exists(d) is False:
             os.makedirs(d)
 
     def open(self, configFile):
@@ -49,7 +51,12 @@ class configFile:
 
 
 @click.group()
-def assembler():
+def vm():
+    pass
+
+
+@click.group()
+def asm():
     pass
 
 
@@ -58,22 +65,32 @@ def hw():
     pass
 
 
+@click.argument("nasm", type=click.File("w"))
+@click.argument("vm")
+@vm.command()
+def from_vm(vm, nasm):
+    # VM can be file or folder
+    v = VMTranslate(vm, nasm)
+    v.run()
+
+
 @click.argument("hack", type=click.File("w"))
 @click.argument("nasm", type=click.File("r"))
-@assembler.command()
+@asm.command()
 def from_nasm(nasm, hack):
-    assembler = Assembler(nasm, hack)
+    asm = ASM(nasm, hack)
+    asm.run()
 
 
 @click.argument("hackPath")
 @click.argument("nasmPath")
-@assembler.command()
+@asm.command()
 def from_dir(nasmpath, hackpath):
-    assemblerFromDir(nasmpath, hackpath)
+    ASMfromDir(nasmpath, hackpath)
 
 
 @click.argument("tstfile", type=click.Path("r"))
-@assembler.command()
+@asm.command()
 def from_config(tstfile):
     conf = configFile(tstfile)
     conf.createDir(conf.hackDir)
@@ -84,7 +101,8 @@ def from_config(tstfile):
     for n in conf.getTests():
         fNasm = open(path.join(conf.nasmDir, n + ".nasm"), "r")
         fHack = open(path.join(conf.hackDir, n + ".hack"), "w")
-        assembler = Assembler(fNasm, fHack)
+        asm = ASM(fNasm, fHack)
+        asm.run()
         print("\t" + n + ".hack")
 
 
@@ -142,7 +160,8 @@ def cli(ctx, debug):
 #   ctx.obj.verbose = verbose
 
 cli.add_command(hw)
-cli.add_command(assembler)
+cli.add_command(asm)
+cli.add_command(vm)
 
 if __name__ == "__main__":
     cli()

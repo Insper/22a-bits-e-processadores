@@ -30,19 +30,22 @@ class Code:
     def writeArithmetic(self, command):
         commands = []
         if len(command) < 2:
-            print("instrucão invalida")
+            print("instrucão invalida {}".format(command))
 
         self.updateUniqLabel()
         commands.append(self.writeHead(command))
 
         if command == "add":
-            commands.append("leaw $0, %A")
-            commands.append("movw (%A), %A")
-            commands.append("decw %A")
-            commands.append("movw (%A), %D")
-            commands.append("decw %A")
-            commands.append("addw (%A), %D, %D")
-            commands.append("movw %D, (%A)")
+            commands.append("leaw $SP,%A")
+            commands.append("movw (%A),%D")
+            commands.append("decw %D")
+            commands.append("movw %D,(%A)")
+            commands.append("movw (%A),%A")
+            commands.append("movw (%A),%D")
+            commands.append("leaw $SP,%A")
+            commands.append("subw (%A),$1,%A")
+            commands.append("addw (%A),%D,%D")
+            commands.append("movw %D,(%A)")
         elif command == "sub":
             commands.append("leaw $SP,%A")
             commands.append("movw (%A),%D")
@@ -165,17 +168,20 @@ class Code:
 
 
 addTestVector = [
-    'leaw $0, %A',
-    "movw (%A), %A",
-    "decw %A",
-    "movw (%A), %D",
-    "decw %A",
-    "addw (%A), %D, %D",
-    "movw %D, (%A)"
+            "leaw $SP,%A",
+            "movw (%A),%D",
+            "decw %D",
+            "movw %D,(%A)",
+            "movw (%A),%A",
+            "movw (%A),%D",
+            "leaw $SP,%A",
+            "subw (%A),$1,%A",
+            "addw (%A),%D,%D",
+            "movw %D,(%A)",
 ]
 
 
-def testWriteArithmetic():
+def test_writeArithmetic():
     f = io.StringIO()
     c = Code(f)
     c.writeArithmetic('add')

@@ -3,7 +3,7 @@
 import os
 import sys
 import click
-from assembler import *
+from ASM import ASM
 
 
 def clearbin(hackPath):
@@ -13,7 +13,7 @@ def clearbin(hackPath):
         pass
 
 
-def assemblerFromDir(nasmPath, hackPath):
+def ASMfromDir(nasmPath, hackPath):
     nasmPath = os.path.abspath(nasmPath)
     hackPath = os.path.abspath(hackPath)
 
@@ -36,7 +36,8 @@ def assemblerFromDir(nasmPath, hackPath):
                 fnasm = open(nNasm, "r")
                 if not os.path.basename(nNasm).startswith("."):
                     print("\t" + filename[:-5] + ".hack")
-                    assembler = Assembler(fnasm, fhack)
+                    asm = ASM(fnasm, fhack)
+                    asm.run()
     else:
         print("output must be folder")
 

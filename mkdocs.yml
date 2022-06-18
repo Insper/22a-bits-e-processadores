@@ -1,23 +1,27 @@
-site_name: 'Bits e Processadores'
+site_name: "Bits e Processadores"
 theme:
-  custom_dir: 'theme'
+  custom_dir: "theme"
   name: active-handout
   features:
     - navigation.instant
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - toc.integrate
+    - content.tabs.link
   palette:
     - scheme: default
       primary: indigo
       accent: indigo
 
-docs_dir: 'docs-src'
+docs_dir: "docs-src"
 
 site_url: https://insper.github.io/bitsEprocessadores/
-edit_uri: 'edit/docs/docs-src/'
+edit_uri: "edit/docs/docs-src/"
 
-repo_name: 'Insper/bitseproc'
-repo_url: 'https://github.com/insper/bitseproc'
+repo_name: "Insper/bitseproc"
+repo_url: "https://github.com/insper/bitseproc"
 
-copyright: 'Copyright &copy; Rafael Corsi @ insper'
+copyright: "Copyright &copy; Rafael Corsi @ insper"
 
 extra_css:
   - https://cdn.jsdelivr.net/gh/insper-education/active-handout-css@main/devlife.css
@@ -35,12 +39,12 @@ plugins:
 
 extra:
   ihandout_config:
-#    calendar: /active-handout/reference/calendar/calendar.yml
-#    counter:
-#      - question
-#      - tip
-#      - exercise
-#      - example
+    #    calendar: /active-handout/reference/calendar/calendar.yml
+    #    counter:
+    #      - question
+    #      - tip
+    #      - exercise
+    #      - example
     report:
       api-base: https://127.0.0.1:8080/api/offerings/1/
       url: https://127.0.0.1:8080/api/offerings/1/exercises/
@@ -73,94 +77,95 @@ markdown_extensions:
   - pymdownx.mark
   - pymdownx.smartsymbols
   - pymdownx.superfences
-  - pymdownx.tabbed
+  - pymdownx.tabbed:
+      alternate_style: true
   - pymdownx.tasklist:
       custom_checkbox: true
   - pymdownx.tilde
   - attr_list
   - md_in_html
-
+  - pymdownx.superfences
+  - pymdownx.tabbed:
 
 nav:
-- Home:
-  - 'index.md'
-  - 'Sobre.md'
-  - 'Sobre-Criterios-de-Avaliacao.md'
-  - 'Sobre-Rubricas.md'
+  - Home:
+      - "index.md"
+      - "Sobre.md"
+      - "Sobre-Criterios-de-Avaliacao.md"
+      - "Sobre-Rubricas.md"
 
-
-#- 'Util-Aulas.md'
-#- '21a/Avaliacoes.md'
-#
-#- 'Projetos':
-#  - 'A-Ambiente-Desenvolvimento-Projeto.md'
-#  - 'LogiComb-Projeto.md'
-#  - 'ula-Projeto.md'
-#  #- 'ula-Projeto-dicas.md'
-#  - 'seq-Projeto.md'
-#  - 'assembly-Projeto.md'
-#  - 'F - CPU':
-#      - 'cpu-Projeto.md'
-#      - 'cpu-Testando.md'
-#  - 'assembler-Projeto.md'
-#  - 'vm-Projeto.md'
-#  - 'J-VMtranslator-Projeto.md'
-#  - 'X-Processadores-Projeto.md'
-#
-#- Labs:
-#  - 'A-Transistores-Lab-1-22.md'
-#  - 'A-Ambiente-Lab-1.md'
-#  - 'A-Ambiente-Lab-2.md'
-##  - 'A-Transistores-Lab-1.md'
-#  - 'LogiComb-Lab-1.md'
-#  - 'LogiComb-Lab-2.md'
-#  - 'ula-Lab-1.md'
-#  - 'ula-Lab-2.md'
-#  - 'ula-Lab-3.md'
-#  - 'seq-Lab-1.md'
-#  - 'assembly-Lab-1.md'
-#  - 'assembly-Lab-2.md'
-#  - 'assembly-Lab-3.md'
-#  - 'assembly-Lab-4.md'
-#  - 'assembly-lab-HW.md'
-#  - 'ula-lab-4.md'
-#  - 'cpu-lab-1.md'
-#  - 'Lab 16: Assembler':
-#    - 'assembler-Lab-1.md'
-#    - 'assembler-Lab-1-parte-1.md'
-#    - 'assembler-Lab-1-parte-2.md'
-#    - 'assembler-Lab-1-parte-3.md'
-#    - 'assembler-Lab-1-parte-4.md'
-#    - 'assembler-Lab-1-parte-5.md'
-#  - 'vm-Lab-1.md'
-#  - 'Lab 18: VMtranslator':
-#    - 'VMtranslator-Lab-1-old.md'
-#    - 'VMtranslator-Lab-1.md'
-#
-- 'Teoria':
-  - 'commum-content/teoria/Teoria-Dados.md'
-#  - 'commum-content/teoria/Teoria-Algebra-Booleana.md'
-#  - 'commum-content/teoria/Teoria-CMOS.md'
-#  - 'commum-content/teoria/Teoria-RTL.md'
-#  - 'commum-content/teoria/Teoria-Componentes.md'
-#  - 'commum-content/teoria/Teoria-Aritmetica-Binaria.md'
-#  - 'commum-content/teoria/Teoria-Aritmetica-Binaria-HW.md'
-#  - 'commum-content/teoria/Teoria-ULA.md'
-#  - 'commum-content/teoria/Teoria-Logica-Sequencial.md'
-#  - 'commum-content/teoria/Teoria-Sequencial-Componentes.md'
-#  - 'commum-content/teoria/Teoria-Z01.md'
-#  - 'commum-content/teoria/Teoria-Assembly.md'
-#  - 'commum-content/teoria/Teoria-Z01-mapadeMemoria.md'
-#  - 'commum-content/teoria/Teoria-nasm-jump.md'
-#  - 'commum-content/teoria/Teoria-Linguagem-de-Maquina.md'
-#  - 'commum-content/teoria/Teoria-Assembler.md'
-#  - 'commum-content/teoria/assembler-Dicas-SymbolTable.md'
-#  - 'commum-content/teoria/Teoria-vm.md'
-#  - 'commum-content/teoria/Teoria-vm-segmentos.md'
-#  - 'commum-content/teoria/Teoria-vm-jump.md'
-#  - 'commum-content/teoria/Teoria-vm-funcoes.md'
-#  - 'commum-content/teoria/Teoria-vm-memoria.md'
-#  - 'commum-content/teoria/Vídeo Aulas (Luciano)': 'Util-Video-Aulas.md'
+  #- 'Util-Aulas.md'
+  #- '21a/Avaliacoes.md'
+  #
+  #- 'Projetos':
+  #  - 'A-Ambiente-Desenvolvimento-Projeto.md'
+  #  - 'LogiComb-Projeto.md'
+  #  - 'ula-Projeto.md'
+  #  #- 'ula-Projeto-dicas.md'
+  #  - 'seq-Projeto.md'
+  #  - 'assembly-Projeto.md'
+  #  - 'F - CPU':
+  #      - 'cpu-Projeto.md'
+  #      - 'cpu-Testando.md'
+  #  - 'assembler-Projeto.md'
+  #  - 'vm-Projeto.md'
+  #  - 'J-VMtranslator-Projeto.md'
+  #  - 'X-Processadores-Projeto.md'
+  #
+  #- Labs:
+  #  - 'A-Transistores-Lab-1-22.md'
+  #  - 'A-Ambiente-Lab-1.md'
+  #  - 'A-Ambiente-Lab-2.md'
+  ##  - 'A-Transistores-Lab-1.md'
+  #  - 'LogiComb-Lab-1.md'
+  #  - 'LogiComb-Lab-2.md'
+  #  - 'ula-Lab-1.md'
+  #  - 'ula-Lab-2.md'
+  #  - 'ula-Lab-3.md'
+  #  - 'seq-Lab-1.md'
+  #  - 'assembly-Lab-1.md'
+  #  - 'assembly-Lab-2.md'
+  #  - 'assembly-Lab-3.md'
+  #  - 'assembly-Lab-4.md'
+  #  - 'assembly-lab-HW.md'
+  #  - 'ula-lab-4.md'
+  #  - 'cpu-lab-1.md'
+  #  - 'Lab 16: Assembler':
+  #    - 'assembler-Lab-1.md'
+  #    - 'assembler-Lab-1-parte-1.md'
+  #    - 'assembler-Lab-1-parte-2.md'
+  #    - 'assembler-Lab-1-parte-3.md'
+  #    - 'assembler-Lab-1-parte-4.md'
+  #    - 'assembler-Lab-1-parte-5.md'
+  #  - 'vm-Lab-1.md'
+  #  - 'Lab 18: VMtranslator':
+  #    - 'VMtranslator-Lab-1-old.md'
+  #    - 'VMtranslator-Lab-1.md'
+  #
+  - "Teoria":
+      - "commum-content/teoria/Teoria-Dados.md"
+      - "commum-content/teoria/Teoria-Algebra-Booleana.md"
+      - "commum-content/teoria/Teoria-CMOS.md"
+      - "commum-content/teoria/Teoria-RTL.md"
+      - "commum-content/teoria/Teoria-Componentes.md"
+      - "commum-content/teoria/Teoria-Aritmetica-Binaria.md"
+      - "commum-content/teoria/Teoria-Aritmetica-Binaria-HW.md"
+      - "commum-content/teoria/Teoria-ULA.md"
+      - "commum-content/teoria/Teoria-Logica-Sequencial.md"
+      - "commum-content/teoria/Teoria-Sequencial-Componentes.md"
+      - "commum-content/teoria/Teoria-Z01.md"
+      - "commum-content/teoria/Teoria-Assembly.md"
+      - "commum-content/teoria/Teoria-Z01-mapadeMemoria.md"
+      - "commum-content/teoria/Teoria-nasm-jump.md"
+      - "commum-content/teoria/Teoria-Linguagem-de-Maquina.md"
+      - "commum-content/teoria/Teoria-Assembler.md"
+      - "commum-content/teoria/Teoria-Assembler-SymbolTable.md"
+      - "commum-content/teoria/Teoria-vm.md"
+      - "commum-content/teoria/Teoria-vm-segmentos.md"
+      - "commum-content/teoria/Teoria-vm-jump.md"
+      - "commum-content/teoria/Teoria-vm-funcoes.md"
+      - "commum-content/teoria/Teoria-vm-memoria.md"
+      - "commum-content/teoria/Vídeo Aulas (Luciano)": "Util-Video-Aulas.md"
 #
 #- 'VHDL':
 #  - 'VHDL-basico.md'
