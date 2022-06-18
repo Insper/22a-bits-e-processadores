@@ -13,6 +13,10 @@ class VMTranslate:
         self.nasm = nasm
         self.isFolder = False if os.path.isfile(vm) else True
         self.files = []
+        self.bootstrap = False
+
+    def enableBootstrap(self):
+        self.bootstrap = True
 
     def parseNameToNasm(self, vmFile):
         return vmFile.split(".vm")[0] + ".nasm"
@@ -27,6 +31,7 @@ class VMTranslate:
 
     def translate(self):
         code = Code(self.nasm)
+        code.writeInit(self.bootstrap, self.isFolder)
         for f in self.files:
             with open(f['vm']) as vmFile:
                 parser = Parser(vmFile)
@@ -35,6 +40,12 @@ class VMTranslate:
                     current = parser.getCurrent()
                     if current['type'] == 'C_ARITHMETIC':
                         code.writeArithmetic(current['command'])
+                    elif current['type'] == 'C_POP':
+                        code.writePop(current['command'],
+                                      current['arg0'], current['arg1'])
+                    elif current['type'] == 'C_PUSH':
+                        code.writePush(current['command'],
+                                       current['arg0'], current['arg1'])
 
     def run(self):
         self.getFiles()

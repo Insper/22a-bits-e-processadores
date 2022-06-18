@@ -9,6 +9,8 @@ class Code:
         self.counter = 0
         self.vmFileName = None
         self.labelCounter = 0
+        self.mapSegment = {'local': '$LCL', 'argument': '$ARG',
+                           'this': '$THIS', 'that': '$THAT'}
 
     def updateVmFileName(self, name):
         self.vmFileName = os.path.basename(name).split('.')[0]
@@ -27,6 +29,26 @@ class Code:
         self.counter = self.counter + 1
         return(";; " + command + " - " + str(self.counter))
 
+    def writeInit(self, bootstrap, isDir):
+        commands = []
+
+        if bootstrap or isDir:
+            commands.append("; Inicialização para VM")
+
+        if bootstrap:
+            commands.append("leaw $256,%A")
+            commands.append("movw %A,%D")
+            commands.append("leaw $SP,%A")
+            commands.append("movw %D,(%A)")
+
+        if isDir:
+            commands.append("leaw $Main.main, %A")
+            commands.append("jmp")
+            commands.append("nop")
+
+        if bootstrap or isDir:
+            self.commandsToFile(commands)
+
     def writeArithmetic(self, command):
         commands = []
         if len(command) < 2:
@@ -35,7 +57,7 @@ class Code:
         self.updateUniqLabel()
         commands.append(self.writeHead(command))
 
-        if command == "add":
+        if command in ["add", 'sub', 'or', 'and']:
             commands.append("leaw $SP,%A")
             commands.append("movw (%A),%D")
             commands.append("decw %D")
@@ -44,18 +66,12 @@ class Code:
             commands.append("movw (%A),%D")
             commands.append("leaw $SP,%A")
             commands.append("subw (%A),$1,%A")
-            commands.append("addw (%A),%D,%D")
-            commands.append("movw %D,(%A)")
-        elif command == "sub":
-            commands.append("leaw $SP,%A")
-            commands.append("movw (%A),%D")
-            commands.append("decw %D")
-            commands.append("movw %D,(%A)")
-            commands.append("movw (%A),%A")
-            commands.append("movw (%A),%D")
-            commands.append("leaw $SP,%A")
-            commands.append("subw (%A),$1,%A")
-            commands.append("subw (%A),%D,%D")
+            if command == 'add':
+                commands.append("addw (%A),%D,%D")
+            elif command == 'sub':
+                commands.append("subw (%A),%D,%D")
+            elif command == 'or':
+                commands.append("orw (%A),%D,%D")
             commands.append("movw %D,(%A)")
         elif command == "not":
             commands.append("leaw $SP,%A")
@@ -68,28 +84,6 @@ class Code:
             commands.append("subw (%A),$1,%A")
             commands.append("movw (%A),%D")
             commands.append("negw %D")
-            commands.append("movw %D,(%A)")
-        elif command == "and":
-            commands.append("leaw $SP,%A")
-            commands.append("movw (%A),%D")
-            commands.append("decw %D")
-            commands.append("movw %D,(%A)")
-            commands.append("movw (%A),%A")
-            commands.append("movw (%A),%D")
-            commands.append("leaw $SP,%A")
-            commands.append("subw (%A),$1,%A")
-            commands.append("andw (%A),%D,%D")
-            commands.append("movw %D,(%A)")
-        elif command == "or":
-            commands.append("leaw $SP,%A")
-            commands.append("movw (%A),%D")
-            commands.append("decw %D")
-            commands.append("movw %D,(%A)")
-            commands.append("movw (%A),%A")
-            commands.append("movw (%A),%D")
-            commands.append("leaw $SP,%A")
-            commands.append("subw (%A),$1,%A")
-            commands.append("orw (%A),%D,%D")
             commands.append("movw %D,(%A)")
         elif command == "eq":
             commands.append("leaw $SP,%A")
@@ -166,6 +160,130 @@ class Code:
 
         self.commandsToFile(commands)
 
+    def writePop(self, command, segment, index):
+        commands = []
+        commands.append(self.writeHead(command + ' ' + segment + ' ' + str(index)))
+        if segment == "" or segment == "constant":
+            return False
+
+        if segment in ['local', 'argument', 'this', 'that']:
+            commands.append("leaw $SP,%A")
+            commands.append("movw (%A),%D")
+            commands.append("decw %D")
+            commands.append("movw %D,(%A)")
+            commands.append("leaw $" + str(index) + ",%A")
+            commands.append("movw %A,%D")
+            commands.append("leaw " + self.mapSegment[segment] + ",%A")
+            commands.append("addw (%A),%D,%D")
+            commands.append("leaw $R15,%A")
+            commands.append("movw %D,(%A)")
+            commands.append("leaw $SP,%A")
+            commands.append("movw (%A),%A")
+            commands.append("movw (%A),%D")
+            commands.append("leaw $R15,%A")
+            commands.append("movw (%A),%A")
+            commands.append("movw %D,(%A)")
+        elif segment == 'temp':
+            idx = 5 + 12
+            if idx > 12:
+                return False
+            commands.append("leaw $SP,%A")
+            commands.append("movw (%A),%D")
+            commands.append("decw %D")
+            commands.append("movw %D,(%A)")
+            commands.append("movw (%A),%A")
+            commands.append("movw (%A),%D")
+            commands.append("leaw $" + str(idx) + ",%A")
+            commands.append("movw %D,(%A)")
+        elif segment == 'static':
+            commands.append("leaw $SP,%A")
+            commands.append("movw (%A),%D")
+            commands.append("decw %D")
+            commands.append("movw %D,(%A)")
+            commands.append("movw (%A),%A")
+            commands.append("movw (%A),%D")
+            commands.append("leaw $" + self.vmFileName + "." + str(index) + ",%A")
+            commands.append("movw %D,(%A)")
+        elif segment == 'pointer':
+            commands.append("leaw $SP,%A")
+            commands.append("movw (%A),%D")
+            commands.append("decw %D")
+            commands.append("movw %D,(%A)")
+            commands.append("movw (%A),%A")
+            commands.append("movw (%A),%D")
+            if index == 0:
+                commands.append("leaw $THIS,%A")
+            else:
+                commands.append("leaw $THAT,%A")
+            commands.append("movw %D,(%A)")
+
+        self.commandsToFile(commands)
+
+    def writePush(self, command, segment, index):
+        commands = []
+        commands.append(self.writeHead(command + ' ' + segment + ' ' + str(index)))
+
+        if segment == "constant":
+            commands.append("leaw $" + str(index) + ",%A")
+            commands.append("movw %A,%D")
+            commands.append("leaw $SP,%A")
+            commands.append("movw (%A),%A")
+            commands.append("movw %D,(%A)")
+            commands.append("leaw $SP,%A")
+            commands.append("movw (%A),%D")
+            commands.append("incw %D")
+            commands.append("movw %D,(%A)")
+        elif segment in ['local', 'argument', 'this', 'that']:
+            commands.append("leaw $" + str(index) + ",%A")
+            commands.append("movw %A,%D")
+            commands.append("leaw " + self.mapSegment[segment] + ",%A")
+            commands.append("addw (%A),%D,%A")
+            commands.append("movw (%A),%D")
+            commands.append("leaw $SP,%A")
+            commands.append("movw (%A),%A")
+            commands.append("movw %D,(%A)")
+            commands.append("leaw $SP,%A")
+            commands.append("movw (%A),%D")
+            commands.append("incw %D")
+            commands.append("movw %D,(%A)")
+        elif segment == 'static':
+            commands.append("leaw $" + self.vmFileName + "." + str(index) + ",%A")
+            commands.append("movw (%A),%D")
+            commands.append("leaw $SP,%A")
+            commands.append("movw (%A),%A")
+            commands.append("movw %D,(%A)")
+            commands.append("leaw $SP,%A")
+            commands.append("movw (%A),%D")
+            commands.append("incw %D")
+            commands.append("movw %D,(%A)")
+        elif segment == 'temp':
+            idx = index + 5
+            if idx > 12:
+                return False
+            commands.append("leaw $" + str(idx) + ",%A")
+            commands.append("movw (%A),%D")
+            commands.append("leaw $SP,%A")
+            commands.append("movw (%A),%A")
+            commands.append("movw %D,(%A)")
+            commands.append("leaw $SP,%A")
+            commands.append("movw (%A),%D")
+            commands.append("incw %D")
+            commands.append("movw %D,(%A)")
+        elif segment == 'pointer':
+            if index == 0:
+                commands.append("leaw $THIS,%A")
+            else:
+                commands.append("leaw $THAT,%A")
+            commands.append("movw (%A),%D")
+            commands.append("leaw $SP,%A")
+            commands.append("movw (%A),%A")
+            commands.append("movw %D,(%A)")
+            commands.append("leaw $SP,%A")
+            commands.append("movw (%A),%D")
+            commands.append("incw %D")
+            commands.append("movw %D,(%A)")
+
+        self.commandsToFile(commands)
 
 addTestVector = [
             "leaw $SP,%A",
@@ -184,7 +302,7 @@ addTestVector = [
 def test_writeArithmetic():
     f = io.StringIO()
     c = Code(f)
-    c.writeArithmetic('add')
+    c.writeArithmetic('append')
     commands = f.getvalue().split('\n')
     for idx, command in enumerate(commands[1:]):
         if len(command) > 2:
