@@ -42,6 +42,8 @@ def mem_dump_file(mem, outFile):
 def ram_test(ref, dump):
     cntErro = 0
     for key, value in ref.items():
+        if key not in dump:
+            dump[key] = 0
         if dump[key] != value:
             cntErro = cntErro + 1
             print("%s: %s | %s" % (key, bin(value, 16), bin(dump[key], 16)))
