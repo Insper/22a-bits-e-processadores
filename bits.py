@@ -89,11 +89,7 @@ def from_dir(nasmpath, hackpath):
     ASMfromDir(nasmpath, hackpath)
 
 
-@click.argument("tstfile", type=click.Path("r"))
-@asm.command()
-def from_config(tstfile):
-    conf = configFile(tstfile)
-    conf.createDir(conf.hackDir)
+def asmFromConfig(conf):
 
     print(" 1/1 gerando novos arquivos .hackpath")
     print(" destine: {}".format(conf.hackDir))
@@ -106,6 +102,26 @@ def from_config(tstfile):
         print("\t" + n + ".hack")
 
 
+@click.argument("tstFile", type=click.Path("r"))
+@asm.command()
+def from_config(tstFile):
+    conf = configFile(tstFile)
+    conf.createDir(conf.hackDir)
+    asmFromConfig(conf)
+
+
+def runHwFronConf(cpu, conf):
+    cpu.updateConfig(conf)
+    cpu.run()
+    cpu.dump()
+    memRef = ram_init_from_mif(conf["refMem"], False, False)
+    memDump = ram_init_from_mif(conf["dumpMem"], False, False)
+    if cpu.test(memRef, memDump) == 0:
+        print("pass")
+    else:
+        print("fail")
+
+
 @click.argument("time", default=50000)
 @click.argument("path")
 @click.argument("nasm")
@@ -116,39 +132,23 @@ def from_dir(nasm, path, time):
     for config in tests:
         config["romFile"] = nasm
         config["runTime"] = time
-        cpu.updateConfig(config)
-        cpu.run()
-        cpu.dump()
-        memRef = ram_init_from_mif(config["refMem"], False, False)
-        memDump = ram_init_from_mif(config["dumpMem"], False, False)
-        if cpu.test(memRef, memDump) == 0:
-            print("pass")
-        else:
-            print("fail")
+        runHwFronConf(config)
 
 
-# TODO estruturar codigo compartilhado
-@click.argument("tstfile", type=click.Path("r"))
+@click.argument("tstFile", type=click.Path("r"))
 @hw.command()
 def from_config(tstfile):
     conf = configFile(tstfile)
+    conf.createDir(conf.hackDir)
+    asmFromConfig(conf)
     for n in conf.getTests():
         cpu = test_z01()
         path = os.path.join(conf.tstDir, n)
         tests = cpu.getTestFilesFromTestName(path)
         for config in tests:
             config["romFile"] = os.path.join(conf.hackDir, n) + ".hack"
-            config["runTime"] = 50000
-            cpu.updateConfig(config)
-            cpu.run()
-            cpu.dump()
-            memRef = ram_init_from_mif(config["refMem"], False, False)
-            memDump = ram_init_from_mif(config["dumpMem"], False, False)
-            if cpu.test(memRef, memDump) == 0:
-                print("pass")
-            else:
-                print("fail")
-
+            config["runTime"] = 100000
+            runHwFronConf(cpu, config)
 
 @click.group()
 @click.option("--debug", "-b", is_flag=True, help="Enables verbose mode.")

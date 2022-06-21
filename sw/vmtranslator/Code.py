@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 import io
 import os
+import queue
+import uuid
 
 
 class Code:
@@ -9,6 +11,7 @@ class Code:
         self.counter = 0
         self.vmFileName = None
         self.labelCounter = 0
+        self.callLifo = queue.LifoQueue()
         self.mapSegment = {'local': '$LCL', 'argument': '$ARG',
                            'this': '$THIS', 'that': '$THAT'}
 
@@ -65,18 +68,18 @@ class Code:
         commands.append("nop")
         self.commandsToFile(commands)
 
-    def writeIf(self, lavel):
+    def writeIf(self, label):
         commands = []
-        commands.add("; IF")
-        commands.add("leaw $SP,%A")
-        commands.add("movw (%A),%D")
-        commands.add("decw %D")
-        commands.add("movw %D,(%A)")
-        commands.add("movw (%A),%A")
-        commands.add("movw (%A),%D")
-        commands.add("leaw $" + self.vmFileName + "." + label + ",%A")
-        commands.add("jne %D")
-        commands.add("nop")
+        commands.append("; IF")
+        commands.append("leaw $SP,%A")
+        commands.append("movw (%A),%D")
+        commands.append("decw %D")
+        commands.append("movw %D,(%A)")
+        commands.append("movw (%A),%A")
+        commands.append("movw (%A),%D")
+        commands.append("leaw $" + self.vmFileName + "." + label + ",%A")
+        commands.append("jne %D")
+        commands.append("nop")
         self.commandsToFile(commands)
 
     def writeArithmetic(self, command):
@@ -317,19 +320,191 @@ class Code:
 
     def writeCall(self, funcName, numArgs):
         commands = []
-        commands.add("; chamada de funcao: " + functionName)
-        # push return-address
-        commands.add("leaw $" + functionName + ".ret." + retHash.get(functionName) +
-                    ",%A");
-        commands.add("movw %A,%D");
-        commands.add("leaw $SP,%A");
-        commands.add("movw (%A),%A");
-        commands.add("movw %D,(%A)");
-        commands.add("leaw $SP,%A");
-        commands.add("movw (%A),%D");
-        commands.add("incw %D");
-        commands.add("movw %D,(%A)");
+        commands.append("; chamada de funcao: " + funcName)
+        returnLabel = funcName + "-ret-" + str(uuid.uuid4().fields[-1])[0:8]
+        self.callLifo.put(returnLabel)
 
+        # return-address
+        commands.append("leaw $" + returnLabel + ",%A")
+        commands.append("movw %A,%D")
+        commands.append("leaw $SP,%A")
+        commands.append("movw (%A),%A")
+        commands.append("movw %D,(%A)")
+        commands.append("leaw $SP,%A")
+        commands.append("movw (%A),%D")
+        commands.append("incw %D")
+        commands.append("movw %D,(%A)")
+
+        # push LCL
+        commands.append("leaw $LCL,%A")
+        commands.append("movw (%A),%D")
+        commands.append("leaw $SP,%A")
+        commands.append("movw (%A),%A")
+        commands.append("movw %D,(%A)")
+        commands.append("leaw $SP,%A")
+        commands.append("movw (%A),%D")
+        commands.append("incw %D")
+        commands.append("movw %D,(%A)")
+
+        # push ARG
+        commands.append("leaw $ARG,%A")
+        commands.append("movw (%A),%D")
+        commands.append("leaw $SP,%A")
+        commands.append("movw (%A),%A")
+        commands.append("movw %D,(%A)")
+        commands.append("leaw $SP,%A")
+        commands.append("movw (%A),%D")
+        commands.append("incw %D")
+        commands.append("movw %D,(%A)")
+
+        # push THIS
+        commands.append("leaw $THIS,%A")
+        commands.append("movw (%A),%D")
+        commands.append("leaw $SP,%A")
+        commands.append("movw (%A),%A")
+        commands.append("movw %D,(%A)")
+        commands.append("leaw $SP,%A")
+        commands.append("movw (%A),%D")
+        commands.append("incw %D")
+        commands.append("movw %D,(%A)")
+
+        # push THAT
+        commands.append("leaw $THAT,%A")
+        commands.append("movw (%A),%D")
+        commands.append("leaw $SP,%A")
+        commands.append("movw (%A),%A")
+        commands.append("movw %D,(%A)")
+        commands.append("leaw $SP,%A")
+        commands.append("movw (%A),%D")
+        commands.append("incw %D")
+        commands.append("movw %D,(%A)")
+
+        # ARG = SP-n-5
+        commands.append("leaw $" + str(numArgs + 5) + ",%A")
+        commands.append("movw %A,%D")
+        commands.append("leaw $SP,%A")
+        commands.append("movw (%A),%A")
+        commands.append("subw %A,%D,%D")
+        commands.append("leaw $ARG,%A")
+        commands.append("movw %D,(%A)")
+
+        # LCL = SP
+        commands.append("leaw $SP,%A")
+        commands.append("movw (%A),%D")
+        commands.append("leaw $LCL,%A")
+        commands.append("movw %D,(%A)")
+
+        # goto f
+        commands.append("leaw $" + funcName + ",%A")
+        commands.append("jmp")
+        commands.append("nop")
+
+        # ret address
+        commands.append(returnLabel + ":")
+
+        self.commandsToFile(commands)
+
+    def writeReturn(self):
+        commands = []
+
+        commands.append("; Retorno de função ")
+
+        # FRAME = LCL
+        commands.append("leaw $LCL,%A")
+        commands.append("movw (%A),%D")
+        commands.append("leaw $R13,%A") # guarda FRAME
+        commands.append("movw %D,(%A)")
+
+        # RET = *(FRAME-5)
+        commands.append("leaw $5,%A")
+        commands.append("subw %D,%A,%A")
+        commands.append("movw (%A),%D")
+        commands.append("leaw $R14,%A") # guarda RET
+        commands.append("movw %D,(%A)")
+
+        #*ARG = pop()
+        commands.append("leaw $ARG,%A")
+        commands.append("movw (%A),%D")
+        commands.append("leaw $R15,%A")
+        commands.append("movw %D,(%A)")
+        commands.append("leaw $SP,%A")
+        commands.append("movw (%A),%D")
+        commands.append("decw %D")
+        commands.append("movw %D,(%A)")
+        commands.append("movw %D,%A")
+        commands.append("movw (%A),%D")
+        commands.append("leaw $R15,%A")
+        commands.append("movw (%A),%A")
+        commands.append("movw %D,(%A)")
+
+        # SP = ARG+1
+        commands.append("leaw $ARG,%A")
+        commands.append("movw (%A),%D")
+        commands.append("leaw $SP,%A")
+        commands.append("addw %D,$1,(%A)")
+
+        # THAT = *(FRAME-1)
+        commands.append("leaw $R13,%A")
+        commands.append("subw (%A),$1,%D")
+        commands.append("movw %D,(%A)") # faz FRAME--
+        commands.append("movw %D,%A")
+        commands.append("movw (%A),%D")
+        commands.append("leaw $THAT,%A")
+        commands.append("movw %D,(%A)")
+
+        # THIS = *(FRAME-2)
+        commands.append("leaw $R13,%A")
+        commands.append("subw (%A),$1,%D")
+        commands.append("movw %D,(%A)") # faz FRAME--
+        commands.append("movw %D,%A")
+        commands.append("movw (%A),%D")
+        commands.append("leaw $THIS,%A")
+        commands.append("movw %D,(%A)")
+
+        # ARG = *(FRAME-3)
+        commands.append("leaw $R13,%A")
+        commands.append("subw (%A),$1,%D")
+        commands.append("movw %D,(%A)") # faz FRAME--
+        commands.append("movw %D,%A")
+        commands.append("movw (%A),%D")
+        commands.append("leaw $ARG,%A")
+        commands.append("movw %D,(%A)")
+
+        # LCL = *(FRAME-4)
+        commands.append("leaw $R13,%A")
+        commands.append("subw (%A),$1,%D")
+        commands.append("movw %D,(%A)") # faz FRAME--
+        commands.append("movw %D,%A")
+        commands.append("movw (%A),%D")
+        commands.append("leaw $LCL,%A")
+        commands.append("movw %D,(%A)")
+
+        # goto RET
+        commands.append("leaw $R14,%A")
+        commands.append("movw (%A),%A")
+        commands.append("jmp")
+        commands.append("nop")
+
+        self.commandsToFile(commands)
+
+    def writeFunction(self, funcName, numLocals):
+        commands = []
+        commands.append(funcName + ":")
+
+        # repeat k times:
+        for i in range(numLocals):
+            # PUSH 0
+            commands.append("leaw $0,%A")
+            commands.append("movw %A,%D")
+            commands.append("leaw $SP,%A")
+            commands.append("movw (%A),%A")
+            commands.append("movw %D,(%A)")
+            commands.append("leaw $SP,%A")
+            commands.append("movw (%A),%D")
+            commands.append("incw %D")
+            commands.append("movw %D,(%A)")
+
+        self.commandsToFile(commands)
 
 
 addTestVector = [

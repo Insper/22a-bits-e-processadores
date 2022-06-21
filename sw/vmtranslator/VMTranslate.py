@@ -23,19 +23,21 @@ class VMTranslate:
 
     def getFiles(self):
         if self.isFolder:
-            pass
+            for file in os.listdir(self.vm):
+                if file[-2:] == 'vm':
+                    self.files.append(os.path.join(self.vm, file))
         else:
-            conf = {'vm': self.vm}
-            self.files.append(conf)
-            print(self.files)
+#            conf = {'vm': self.vm}
+            self.files.append(self.vm)
+        print(self.files)
 
     def translate(self):
         code = Code(self.nasm)
         code.writeInit(self.bootstrap, self.isFolder)
         for f in self.files:
-            with open(f['vm']) as vmFile:
+            with open(f) as vmFile:
                 parser = Parser(vmFile)
-                code.updateVmFileName(f['vm'])
+                code.updateVmFileName(f)
                 while parser.advance():
                     current = parser.getCurrent()
                     if current['type'] == 'C_ARITHMETIC':
@@ -49,9 +51,15 @@ class VMTranslate:
                     elif current['type'] == 'C_LABEL':
                         code.writeLabel(current['arg0'])
                     elif current['type'] == 'C_GOTO':
-                        code.writeGoto(current['arg0'])                        code.writeLabel(current['arg0'])
+                        code.writeGoto(current['arg0'])
                     elif current['type'] == 'C_IF':
                         code.writeIf(current['arg0'])
+                    elif current['type'] == 'C_CALL':
+                        code.writeCall(current['arg0'], current['arg1'])
+                    elif current['type'] == 'C_RETURN':
+                        code.writeReturn()
+                    elif current['type'] == 'C_FUNCTION':
+                        code.writeFunction(current['arg0'], current['arg1'])
 
     def run(self):
         self.getFiles()
