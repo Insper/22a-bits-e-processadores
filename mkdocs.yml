@@ -97,7 +97,8 @@ nav:
   #- 'Util-Aulas.md'
   #- '21a/Avaliacoes.md'
   #
-  #- 'Projetos':
+  - "Projetos":
+      - "class/intro-projeto.md"
   #  - 'A-Ambiente-Desenvolvimento-Projeto.md'
   #  - 'LogiComb-Projeto.md'
   #  - 'ula-Projeto.md'
@@ -112,8 +113,10 @@ nav:
   #  - 'J-VMtranslator-Projeto.md'
   #  - 'X-Processadores-Projeto.md'
   #
-  #- Labs:
-  #  - 'A-Transistores-Lab-1-22.md'
+  - Labs:
+      - "class/intro-benchmark-lab.md"
+      - "class/intro-lab-1.md"
+      - "class/intro-lab-2.md"
   #  - 'A-Ambiente-Lab-1.md'
   #  - 'A-Ambiente-Lab-2.md'
   ##  - 'A-Transistores-Lab-1.md'
