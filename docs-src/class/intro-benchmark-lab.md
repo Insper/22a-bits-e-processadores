@@ -1,4 +1,4 @@
-# Benchmark
+# Lab 1: Benchmark
 
 !!! info "pensadeira"
     - Forncer um ssd com a infra já instalada?
@@ -8,6 +8,9 @@
         - cache
         - acesso a disco
         - 
+
+!!! warning
+    Conecte o seu computador na tomada.
 
 Neste laboratório iremos explorar os diferentes tipos de hardware existentes e qual o impacto no desempenho de alguns tipos de programa. Para isso iremos utilizar o [phoronix-test-suite](https://www.phoronix-test-suite.com/), que disponibiliza uma série de testes do https://openbenchmarking.org/.
 

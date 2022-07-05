@@ -22,12 +22,12 @@ class VMTranslate:
         return vmFile.split(".vm")[0] + ".nasm"
 
     def getFiles(self):
+        self.files = []
         if self.isFolder:
             for file in os.listdir(self.vm):
                 if file[-2:] == 'vm':
                     self.files.append(os.path.join(self.vm, file))
         else:
-#            conf = {'vm': self.vm}
             self.files.append(self.vm)
         print(self.files)
 
@@ -65,6 +65,9 @@ class VMTranslate:
         self.getFiles()
         self.translate()
         pass
+
+    def close(self):
+        self.vm.close()
 
 
 def testVM():

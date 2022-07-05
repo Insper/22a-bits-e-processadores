@@ -10,8 +10,8 @@ Esse projeto também tem como objetivo introduzir a dinâmica de trabalho e aval
 
 Para executar esse projeto basta completar os laboratórios: 
 
-- [Lab 1: Configurando Github](/Z01.1/A-Ambiente-Lab-1)
-- [Lab 2: Github](/Z01.1/A-Ambiente-Lab-2)
+- [Lab 1: Configurando Github](/bits-e-proc/intro-lab-1)
+- [Lab 2: Github](/bits-e-proc/intro-lab-2)
 
 ## Rubricas
 

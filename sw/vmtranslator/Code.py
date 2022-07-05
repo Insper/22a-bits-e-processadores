@@ -15,6 +15,9 @@ class Code:
         self.mapSegment = {'local': '$LCL', 'argument': '$ARG',
                            'this': '$THIS', 'that': '$THAT'}
 
+    def close(self):
+        self.outFile.close()
+
     def updateVmFileName(self, name):
         self.vmFileName = os.path.basename(name).split('.')[0]
 
@@ -217,8 +220,8 @@ class Code:
             commands.append("movw (%A),%A")
             commands.append("movw %D,(%A)")
         elif segment == 'temp':
-            idx = 5 + 12
-            if idx > 12:
+            idx = index + 5
+            if idx > 22:
                 return False
             commands.append("leaw $SP,%A")
             commands.append("movw (%A),%D")

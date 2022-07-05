@@ -5,6 +5,7 @@ import yaml
 from myhdl import *
 import sys
 import os.path
+import shutil
 
 # TODO usar __init__ !
 sys.path.insert(0, "./hw")
@@ -22,11 +23,15 @@ class configFile:
         self.config = ""
         self.tests = ""
         self.name = ""
+        self.vmDir = ""
         self.nasmDir = ""
         self.hackDir = ""
         self.tstDir = ""
         self.workDir = ""
         self.open(configFile)
+
+    def clearDir(self, d):
+        shutil.rmtree(d)
 
     def createDir(self, d):
         if os.path.exists(d) is False:
@@ -39,6 +44,7 @@ class configFile:
                 self.tests = self.config["test_files"]
                 self.name = self.config["config"]["name"]
                 self.workDir = os.path.dirname(os.path.abspath(configFile))
+                self.vmDir = path.join(self.workDir, self.config["config"]["vmDir"])
                 self.nasmDir = path.join(self.workDir, self.config["config"]["nasmDir"])
                 self.hackDir = path.join(self.workDir, self.config["config"]["hackDir"])
                 self.tstDir = path.join(self.workDir, self.config["config"]["tstDir"])
@@ -72,6 +78,45 @@ def from_vm(vm, nasm):
     # VM can be file or folder
     v = VMTranslate(vm, nasm)
     v.run()
+
+
+@click.argument("tstFile", type=click.Path("r"))
+@vm.command()
+def from_config(tstfile):
+    conf = configFile(tstfile)
+    conf.clearDir(conf.nasmDir)
+    conf.createDir(conf.nasmDir)
+    conf.clearDir(conf.hackDir)
+    conf.createDir(conf.hackDir)
+
+    # vm -> nasm
+    for n in conf.getTests():
+        name = n.split('.')[0]
+        fNasm = open(os.path.join(conf.nasmDir, name + ".nasm"), "w")
+        fVm = os.path.join(conf.vmDir, n)
+        v = VMTranslate(fVm, fNasm)
+        v.run()
+
+    # nasm -> hack
+    for n in conf.getTests():
+        name = n.split('.')[0]
+        fNasm = open(os.path.join(conf.nasmDir, name + ".nasm"), "r")
+        fHack = open(os.path.join(conf.hackDir, name + ".hack"), "w")
+        asm = ASM(fNasm, fHack)
+        asm.run()
+        print("\t" + name + ".hack")
+
+    for n in conf.getTests():
+        name = n.split('.')[0]
+        cpu = test_z01()
+        tstDir = os.path.join(conf.tstDir, name)
+        tests = cpu.getTestFilesFromTestName(tstDir)
+        for config in tests:
+            config["romFile"] = os.path.join(conf.hackDir, name) + ".hack"
+            config["runTime"] = 100000
+            hwFronConf(cpu, config)
+
+    # VM can be file or folder
 
 
 @click.argument("hack", type=click.File("w"))
@@ -110,7 +155,7 @@ def from_config(tstFile):
     asmFromConfig(conf)
 
 
-def runHwFronConf(cpu, conf):
+def hwFronConf(cpu, conf):
     cpu.updateConfig(conf)
     cpu.run()
     cpu.dump()
@@ -132,7 +177,7 @@ def from_dir(nasm, path, time):
     for config in tests:
         config["romFile"] = nasm
         config["runTime"] = time
-        runHwFronConf(config)
+        hwFronConf(config)
 
 
 @click.argument("tstFile", type=click.Path("r"))
@@ -148,7 +193,7 @@ def from_config(tstfile):
         for config in tests:
             config["romFile"] = os.path.join(conf.hackDir, n) + ".hack"
             config["runTime"] = 100000
-            runHwFronConf(cpu, config)
+            hwFronConf(cpu, config)
 
 @click.group()
 @click.option("--debug", "-b", is_flag=True, help="Enables verbose mode.")

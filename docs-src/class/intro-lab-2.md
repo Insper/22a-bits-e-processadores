@@ -29,13 +29,12 @@ $ git clone $URL_DO_FORK
     No caso anterior, o comando a ser colado deve ser: `git clone URL_DO_FORK`.
     
 !!! Linux
-    Para abrir o terminal: `meta`+`t` 
+    Para abrir o terminal no Linux: `meta`+`t` 
 
 !!! progress 
     Cheguei Aqui!
 
-
-## Adicionando nomes ao `INTEGRANTES.json`
+## Adicionando nomes ao `GRUPO.yml`
 
 !!! warning "Individual"
     Deve ser realizado individual por todos do grupo.
@@ -54,22 +53,18 @@ Nesse etapa cada integrante do grupo irá editar um arquivo no seu computador e 
 1. Enviar mudanças para o repositório remoto
 1. Gerar pull-request
 
-### `INTEGRANTES.json`
-
 **Cada integrante** do grupo deve editar o documento com na raiz do projeto com nome `INTEGRANTES.json` 
 e adicionar a esse arquivo o seu nome, e-mail (insper) e usuário gituhb. Conforme o exemplo a seguir:
 
-``` json
-{
-  "aluno-1": {
-    "nome": "Rafae Corsi",
-    "email-insper": "rafael.corsi@insper.edu.br",
-    "user-github": "rafaelcorsi"
-  },
+``` yml
+- user: 1
+  name: Rafael Corsi
+  git-username: rafael.corsi
+  blackboard-username: rafael.ferrao
 ```
 
 !!! warning 
-    Uma única pessoa não deve editar o documento com todos os nomes.
+    Uma única pessoa **não** deve editar o documento com todos os nomes.
     
     - Cada um deve realizar individualmente em seu computador.
 
@@ -91,7 +86,7 @@ $ git checkout -B $NOME
 Agora vamos fazer um commit com o seu nome nesse novo branch:
 
 ``` bash
-$ git add INTEGRANTES.json
+$ git add GRUPO.yml
 $ git commit -m "Adicionado meu $NOME ao arquivo"
 ```
 
@@ -132,10 +127,10 @@ Vamos agora gerar o pull-request na interface do github, de forma similar ao exe
 ## Aceitando pull-request
 
 !!! warning "Apenas o mediador"
-    Vocês devem escolher um do grupo para assumir o papel do mediador!
+    1. Vocês devem escolher um do grupo para assumir o papel do mediador!
+    1. Projetar no monitor para que todos acompanhem o processo
 
 O **mediador** do projeto deve revisar os pull-requests (e corrigir eventuais erros de merge) 
 e aceitar ou negar o pedido. 
-
 
 ![](figs/B-CI/pullrequest-accept.gif)

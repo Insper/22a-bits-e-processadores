@@ -1,36 +1,37 @@
 config:
   type: "vm"
   name: "Teste VM"
-  nasmDir: "assembly"
-  hackDir: "hack"
-  tstDir: "tests"
+  vmDir: "vm/examples"
+  nasmDir: "vm-nasm"
+  hackDir: "vm-hack"
+  tstDir: "tests_vm"
 
 not_working:
-  - SimplePushConst
-  - SimplePushLocal
-  - SimplePushTemp
-  - SimplePushThat
-  - SimplePushThis
-  - SimplePopLocal
-  - SimplePopPointer
-  - SimplePopTemp
-  - SimplePopThat
-  - SimplePopThis
-  - SimplePushAdd
-  - SimplePushArg
-  - SimpleGoto
-  - SimpleIfGoto
-  - StackTest
-  - StaticsTest
+  - SimplePushConst.vm
+  - SimplePushLocal.vm
+  - SimplePushTemp.vm
+  - SimplePushThat.vm
+  - SimplePushThis.vm
+  - SimplePopLocal.vm
+  - SimplePopPointer.vm
+  - SimplePopThat.vm
+  - SimplePopThis.vm
+  - SimplePushAdd.vm
+  - SimplePushArg.vm
+  - SimpleGoto.vm
+  - SimpleIfGoto.vm
+  - StackTest.vm
+  - StaticTest.vm
   - SimpleFunction
   - Mult
+  - SimpleAdd.vm
+  - SimpleAnd.vm
+  - SimpleNeg.vm
+  - SimpleOr.vm
+  - SimpleSub.vm
+  - SimpleEq.vm
 
 test_files:
-  - SimpleAdd
-  - SimpleAnd
-  - SimpleNeg
-  - SimpleOr
-  - SimpleSub
-  - SimpleEq
-  - SimpleGt
-  - SimpleLt
+  - SimplePopTemp.vm
+  - SimpleLt.vm
+  - SimpleGt.vm
