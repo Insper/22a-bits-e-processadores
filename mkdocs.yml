@@ -8,6 +8,7 @@ theme:
     - navigation.tabs.sticky
     - toc.integrate
     - content.tabs.link
+    - content.code.annotate # (1)
   palette:
     - scheme: default
       primary: indigo
@@ -99,7 +100,7 @@ nav:
 
   - "Projetos":
       - "class/intro-projeto.md"
-      - "class/logiComb-projeto.md"
+      - "class/comb-projeto.md"
   #  - 'LogiComb-Projeto.md'
   #  - 'ula-Projeto.md'
   #  #- 'ula-Projeto-dicas.md'
@@ -118,7 +119,8 @@ nav:
       - "class/intro-lab-1.md"
       - "class/intro-lab-2.md"
       - "Lab 4: Transistores/ CI": "commum-content/labs/A-Transistores-Lab-1.md"
-      - "class/logiComb-lab-1.md"
+      - "class/comb-lab-1.md"
+      - "class/ula-lab-1.md"
   #  - 'ula-Lab-1.md'
   #  - 'ula-Lab-2.md'
   #  - 'ula-Lab-3.md'
