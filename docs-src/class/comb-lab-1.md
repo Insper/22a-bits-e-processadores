@@ -42,7 +42,7 @@ A seguir um exemplo do teste falhando e então solucionado e testado novamente:
 <script id="asciicast-DL3cuBQSgSgIyXdZK2LVBolgr" src="https://asciinema.org/a/DL3cuBQSgSgIyXdZK2LVBolgr.js" async></script>
 
 !!! exercise
-    1. Navegue no terminal até a pasta `1-comb`
+    1. Navegue no terminal até a pasta `comb`
     1. Execute no terminal `pytest -k exe1`
     
     O teste deve falhar pois não foi implementado ainda.
@@ -103,26 +103,30 @@ Onde:
 
 O programa `toplevel.py` faz o mapeamento do componente para os pinos da FPGA e gera o arquivo `toplevel.vhd` que será utilizado pelo Quartus para gerar o arquivo binário que irá ser programado na FPGA, a ideia desse módulo é mapear os sinais do componente para nomes e tamanhos fixos que serão utilizados pelo programa.
 
- ```py title="toplevel.py"
- @block
- def toplevel(LEDR, SW, KEY, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5):
-     ic1 = componente(HEX0, SW)
+```py title="toplevel.py"
+@block
+def toplevel(LEDR, SW, KEY, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, CLOCK_50, RESET_N):
+    ...
+    
+    ic1 = exe4(ledr_s, SW)
+    
+    ...
 
- # pinos
- LEDR = Signal(intbv(0)[10:]) # (1)
- SW = Signal(intbv(0)[10:])
- KEY = Signal(intbv(0)[4:])
- HEX0 = Signal(intbv(1)[7:])
- HEX1 = Signal(intbv(1)[7:])
- HEX2 = Signal(intbv(1)[7:])
- HEX3 = Signal(intbv(1)[7:])
- HEX4 = Signal(intbv(1)[7:])
- HEX5 = Signal(intbv(1)[7:])
- 
- # instance e generate vhd
- top = toplevel(LEDR, SW, KEY, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5)
- top.convert(hdl="VHDL") # (2)
- ```
+# pinos
+LEDR = Signal(intbv(0)[10:]) # (1)
+SW = Signal(intbv(0)[10:])
+KEY = Signal(intbv(0)[4:])
+HEX0 = Signal(intbv(1)[7:])
+HEX1 = Signal(intbv(1)[7:])
+HEX2 = Signal(intbv(1)[7:])
+HEX3 = Signal(intbv(1)[7:])
+HEX4 = Signal(intbv(1)[7:])
+HEX5 = Signal(intbv(1)[7:])
+
+# instance e generate vhd
+top = toplevel(LEDR, SW, KEY, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5)
+top.convert(hdl="VHDL") # (2)
+```
  
  1. Vetor de tamanho 10
  2. Aqui indicamos para o MyHDL gerar o vhdl a partir do componente `top`
@@ -140,7 +144,7 @@ Notem que os sinais criados são do tipo `Signal(intbv(0)[X:])`, isso indica que
  ```
     
 !!! info
-    Notem que o `componente` recebe como argumentos os `LEDS` e as chaves `SW` da FPGA e implementa a lógica `sw[0] and (not sw[1])`.
+    Notem que o `componente` recebe como argumentos os `ledr_s` e as chaves `SW` da FPGA e implementa a lógica `sw[0] and (not sw[1])`.
 
 !!! exercise
     1. Analise o arquivo `toplevel.py`
@@ -159,19 +163,11 @@ O processo de gerar um hardware que posso ser executado na FPGA é complexo e at
     O processo é demorado para quem está acostumado a apenas programar em python, a geracão do arquivo pode demorar alguns minutos.
 
 !!! exercise
-    1. Entre na pasta `1-comb/quartus`
-    1. Execute `make clean` e então
-    1. Execute `make all`
+    Na raiz do repositório `comb/quartus`, execute:
+    1. `make -C quartus clean`
+    1. `make -c quartus all`
     1. Aguardem compilar
-    1. Verifiquem que um novo arquivo `DE0_CV_Default.sof` foi gerado
-    
-    !!! info
-        Como alternativa a entrar na pasta do Quartus você pode executar o make da pasta `1-logComb`:
-        
-        ``` bash
-        make -C quartus clean
-        make -C quartus all
-        ```
+    1. Verifiquem que um novo arquivo `quartus/DE0_CV_Default.sof` foi gerado
     
 ### Programando FPGA
 
@@ -191,7 +187,7 @@ Vamos praticar um pouco mais, agora usando a FPGA. Para cada um dos módulos a s
     Tarefa: 
     
     1. Implementar o módulo
-    1. gerar o `toplevel.vhd` rodando `toplevel.py`
+    1. Gerar o `toplevel.vhd` rodando `toplevel.py`
     1. Compile o vhdl
         - `make -C quartus clean`
         - `make -C quartus all`.
@@ -200,26 +196,24 @@ Vamos praticar um pouco mais, agora usando a FPGA. Para cada um dos módulos a s
 
 
 !!! exercise
-    - File: `componentes.py `
     - Modulo: `sw2hex`
     
     Modifique o `toplevel.py` adicionando o módulo novo para acionar o `HEX0` controlado pelo `sw2hex`:
     
     ``` diff
-    ic1 = exe5(LEDR, SW)
+    ic1 = exe5(ledr_s, SW)
     +ic2 = sw2hex(HEX0, SW)
     ```
     
     Lembre de validar na FPGA.
     
 !!! exercise
-    - File: `componentes.py `
     - Modulo: `bin2hex`
     
     Modifique o `toplevel.py` adicionando o módulo novo para acionar o `HEX1` controlado pelo `bin2hex`:
     
     ``` diff
-    ic1 = exe5(LEDR, SW)
+    ic1 = exe5(ledr_s, SW)
     ic2 = sw2hex(HEX0, SW)
     +ic3 = bin2hex(HEX1, SW)
     ```

@@ -7,7 +7,7 @@ Neste laboratório iremos desenvolver somadores que serão utilizados no desenvo
 Vamos comecar implementando as duas unidades básicas são utilizadas em um somador: half-adder e full-adder. 
 
 !!! exercise
-    - File: `2-ula/ula_modules.py `
+    - File: `ula/ula_modules.py `
     - Modulo: `def halfAdder(a, b, soma, vaiUm):`
     - Test: `pytest -k halfAdder`
  
@@ -16,7 +16,7 @@ Vamos comecar implementando as duas unidades básicas são utilizadas em um soma
     - Test: `pytest -k fullAdder`
     
 
-## Reutilizando componente ( `Structural Modeling` )
+### Reutilizando componente ( `Structural Modeling` )
 
 !!! info
     Para mais detalhes acesse a documentação do MyHDL
@@ -27,7 +27,7 @@ A modelagem estrutural em hardware pode ser entendida como a utilização de dif
 
 Para isso devemos criar "instancias" de um componente, por exemplo: Podemos criar uma instância do halfAdder e outra do fullAdder para implementarmos um somador de dois bits. Podemos pensar nessas instâncias como "ir até o armário do laboratório e pegar um CI de cada tipo", cada instância é executada em paralelo e consume recursos próprios, quanto mais instâncias, mais complexo é o hardware e mais recursos são utilizados.
 
-### halfAdder
+#### halfAdder
 
 Como exemplo do processo vamos reimplementar o fullAdder, mas agora utilizando dois halfAdders, como demonstrado no diagrama a seguir:
 
@@ -78,8 +78,11 @@ Podemos melhorar um pouco o código anterior se no lugar dos sinais `s0`, `s1` e
 
 Com isso temos um vetor de bits `s` que pode ser endereçado como `s[0]`, `s[1]` e `s[2]`.
 
+!!! tip
+    O MyHDL possui um tipo próprio para tratar um vetor de bits (`intbv` ou `modbv`), mas por enquanto vamos usar o vetor criado por vários bools. A diferença entre os dois métodos é que no `intbv` os bits são interpretados como um único sinal (`unsigned` ou `signed`, como se fosse uma variável) e no vetor criado por `bools` os bits são independentes!
+
 !!! exercise
-    Modifique o fullAdder novamente, mas agora usando um vetor de bits `s[]` no lugar dos três sinais `s0`, `s1` e `s2`.
+    Modifique novamenge o `fullAdder`, mas agora usando um vetor de bits `s[]` no lugar dos três sinais `s0`, `s1` e `s2`.
     
     ??? solução
         ```python
@@ -213,6 +216,13 @@ Agora vamos executar o adder na FPGA! Vamos usar a implementação do `adder` ge
 No `toplevel.py` eu estou usando o `bin2hex` do laboratório anterior para mostrar no display HEX0 o resultado da soma.
 
 !!! exercise
+    Modifique o `toplevel.py`:
+    
+    ``` py
+    ic1 = adder(sw[0:4], sw[6:10], ledr_s[0:4], ledr_s[9])
+    ic2 = bin2hex(HEX0, ledr_bin)
+    ```
+
     1. Gerar o `toplevel.vhd` rodando `toplevel.py`
     1. Compile o vhdl
         - `make -C quartus clean`
