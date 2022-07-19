@@ -1,0 +1,1855 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://insper.github.io/bitsEprocessadores/class/seq-lab-1/">
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.3.1, mkdocs-material-8.3.9">
+    
+    
+      
+        <title>Lab 8: Lógica Sequencial - Bits e Processadores</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.1d29e8d0.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.cbb835fc.min.css">
+        
+      
+      
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/insper-education/active-handout-css@main/devlife.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Sans+Extra+Condensed:700|Oxygen+Mono|Source+Sans+Pro:700|Source+Serif+Pro&amp;display=swap">
+<link rel="stylesheet" href="../../assets/css/devlife.css">
+
+
+    <script>
+        window.ihandout_config = JSON.parse(`{"report": {"api-base": "https://127.0.0.1:8080/api/offerings/1/", "url": "https://127.0.0.1:8080/api/offerings/1/exercises/"}}`);
+    </script>
+
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&"object"==typeof palette.color)for(var key of Object.keys(palette.color))document.body.setAttribute("data-md-color-"+key,palette.color[key])</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#lab-8-logica-sequencial" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Bits e Processadores" class="md-header__button md-logo" aria-label="Bits e Processadores" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Bits e Processadores
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Lab 8: Lógica Sequencial
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      <form class="md-header__option" data-md-component="palette">
+        
+          
+          
+          <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-hidden="true"  type="radio" name="__palette" id="__palette_1">
+          
+        
+      </form>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/insper/bitseproc" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Insper/bitseproc
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-tabs__inner md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        Home
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../intro-projeto/" class="md-tabs__link">
+        Projetos
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+    
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../intro-benchmark-lab/" class="md-tabs__link md-tabs__link--active">
+        Labs
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../commum-content/teoria/Teoria-Dados/" class="md-tabs__link">
+        Teoria
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../teoria/myhdl-1/" class="md-tabs__link">
+        MyHDL
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../commum-content/z01/z01-Resumo-Assembly/" class="md-tabs__link">
+        Z01
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../commum-content/exercicios/Exercicio-Algebra-Booleana-1/" class="md-tabs__link">
+        Estudo
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../commum-content/util/Util-Comecando-novo-projeto/" class="md-tabs__link">
+        Útil
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Bits e Processadores" class="md-nav__button md-logo" aria-label="Bits e Processadores" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    Bits e Processadores
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/insper/bitseproc" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Insper/bitseproc
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1" type="checkbox" id="__nav_1" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_1">
+          Home
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Home" data-md-level="1">
+        <label class="md-nav__title" for="__nav_1">
+          <span class="md-nav__icon md-icon"></span>
+          Home
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        Bis e processadores
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Sobre/" class="md-nav__link">
+        Sobre
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Sobre-Criterios-de-Avaliacao/" class="md-nav__link">
+        Critérios de Avaliação
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Sobre-Rubricas/" class="md-nav__link">
+        Rubricas individuais
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2">
+          Projetos
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Projetos" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          Projetos
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../intro-projeto/" class="md-nav__link">
+        A - Ambiente de desenvolvimento
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../comb-projeto/" class="md-nav__link">
+        B - Lógica Combinacional
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3">
+          Labs
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Labs" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          Labs
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../intro-benchmark-lab/" class="md-nav__link">
+        Lab 1: Benchmark
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../intro-lab-1/" class="md-nav__link">
+        Lab 2: Configurando Github
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../intro-lab-2/" class="md-nav__link">
+        Lab 3: Github
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../commum-content/labs/A-Transistores-Lab-1.md" class="md-nav__link">
+        Lab 4: Transistores/ CI
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../comb-lab-1/" class="md-nav__link">
+        Lab 5: MyHDL
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ula-lab-1/" class="md-nav__link">
+        Lab 6: Adders
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ula-lab-2/" class="md-nav__link">
+        Lab 7: Depurando
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Lab 8: Lógica Sequencial
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Lab 8: Lógica Sequencial
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#dff" class="md-nav__link">
+    dff
+  </a>
+  
+    <nav class="md-nav" aria-label="dff">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#clock" class="md-nav__link">
+    Clock
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#piscando-led" class="md-nav__link">
+    Piscando LED
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#melhorando" class="md-nav__link">
+    Melhorando
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#blink-melhorado" class="md-nav__link">
+    blink melhorado
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#desafio" class="md-nav__link">
+    Desafio
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4">
+          Teoria
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Teoria" data-md-level="1">
+        <label class="md-nav__title" for="__nav_4">
+          <span class="md-nav__icon md-icon"></span>
+          Teoria
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../commum-content/teoria/Teoria-Dados/" class="md-nav__link">
+        Dados Digitais
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../commum-content/teoria/Teoria-Algebra-Booleana/" class="md-nav__link">
+        Álgebra Booleana
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../commum-content/teoria/Teoria-CMOS/" class="md-nav__link">
+        Lógica CMOS (Complementary Metal–Oxide–Semiconductor)
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../commum-content/teoria/Teoria-RTL/" class="md-nav__link">
+        Resistor-Transistor Logic (RTL)
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../commum-content/teoria/Teoria-Componentes/" class="md-nav__link">
+        Componentes Digitais
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../commum-content/teoria/Teoria-Aritmetica-Binaria/" class="md-nav__link">
+        Aritmética Binária
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../commum-content/teoria/Teoria-Aritmetica-Binaria-HW/" class="md-nav__link">
+        Aritmética Binária - HW
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../commum-content/teoria/Teoria-ULA/" class="md-nav__link">
+        ULA
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../commum-content/teoria/Teoria-Logica-Sequencial/" class="md-nav__link">
+        Lógica Sequencial
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../commum-content/teoria/Teoria-Sequencial-Componentes/" class="md-nav__link">
+        Componentes Síncronos
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../commum-content/teoria/Teoria-Z01/" class="md-nav__link">
+        Z01
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../commum-content/teoria/Teoria-Assembly/" class="md-nav__link">
+        ASM - Assembly
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../commum-content/teoria/Teoria-Z01-mapadeMemoria/" class="md-nav__link">
+        ASM - Mapa de memória
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../commum-content/teoria/Teoria-nasm-jump/" class="md-nav__link">
+        ASM - jump
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../commum-content/teoria/Teoria-Linguagem-de-Maquina/" class="md-nav__link">
+        Linguagem de máquina
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../commum-content/teoria/Teoria-Assembler/" class="md-nav__link">
+        Assembler
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../commum-content/teoria/Teoria-Assembler-SymbolTable/" class="md-nav__link">
+        Tabela de Símbolos
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../commum-content/teoria/Teoria-vm/" class="md-nav__link">
+        VM
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../commum-content/teoria/Teoria-vm-segmentos/" class="md-nav__link">
+        VM - Segmentos
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../commum-content/teoria/Teoria-vm-jump/" class="md-nav__link">
+        VM - jump
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../commum-content/teoria/Teoria-vm-funcoes/" class="md-nav__link">
+        VM - Funções
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../commum-content/teoria/Teoria-vm-memoria/" class="md-nav__link">
+        VM - Memória
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Util-Video-Aulas.md" class="md-nav__link">
+        commum-content/teoria/Vídeo Aulas (Luciano)
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5">
+          MyHDL
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="MyHDL" data-md-level="1">
+        <label class="md-nav__title" for="__nav_5">
+          <span class="md-nav__icon md-icon"></span>
+          MyHDL
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../teoria/myhdl-1/" class="md-nav__link">
+        MyHDL Básico
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_6" type="checkbox" id="__nav_6" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6">
+          Z01
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Z01" data-md-level="1">
+        <label class="md-nav__title" for="__nav_6">
+          <span class="md-nav__icon md-icon"></span>
+          Z01
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../commum-content/z01/z01-Resumo-Assembly/" class="md-nav__link">
+        Resumo Assembly
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../commum-content/z01/z01-Cheat-Sheet/" class="md-nav__link">
+        Z01.1 Cheat Sheet
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../commum-content/z01/z01-InstructionSet/" class="md-nav__link">
+        Instruction Set
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../commum-content/z01/z01-Resumo-VM/" class="md-nav__link">
+        Resumo VM
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_7" type="checkbox" id="__nav_7" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_7">
+          Estudo
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Estudo" data-md-level="1">
+        <label class="md-nav__title" for="__nav_7">
+          <span class="md-nav__icon md-icon"></span>
+          Estudo
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../commum-content/exercicios/Exercicio-Algebra-Booleana-1/" class="md-nav__link">
+        Álgebra Booleana - 1
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../commum-content/exercicios/Exercicio-Algebra-Booleana-2/" class="md-nav__link">
+        Álgebra Booleana - 2
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://docs.google.com/spreadsheets/d/1rN_zQqYaVI8PjAhKqEBCmY-_06I0X9dD0RddcI-miJs/edit?usp=sharing" class="md-nav__link">
+        Dados Digitais - 1
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../commum-content/exercicios/Exercicio-Dados-2/" class="md-nav__link">
+        Dados Digitais - 2
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/Insper/elementos-bits-content/blob/main/exercicios/Exercicio-Aritmetica-Booleana.pdf" class="md-nav__link">
+        Handout Aritmetica Booleana
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://forms.gle/XMsFCDMYsmz1qUP86" class="md-nav__link">
+        Lógica Sequencial
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://github.com/Insper/elementos-bits-content/blob/main/exercicios/Linguagem_de_maquina.pdf" class="md-nav__link">
+        Linguagem de Máquina
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../commum-content/exercicios/Exercicio-CPU-1/" class="md-nav__link">
+        Exercicio CPU - 1
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../commum-content/exercicios/Exercicio-CPU-2/" class="md-nav__link">
+        Exercicio CPU - 2
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8" type="checkbox" id="__nav_8" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8">
+          Útil
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Útil" data-md-level="1">
+        <label class="md-nav__title" for="__nav_8">
+          <span class="md-nav__icon md-icon"></span>
+          Útil
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../commum-content/util/Util-Comecando-novo-projeto/" class="md-nav__link">
+        Começando novo projeto
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../commum-content/util/Util-vixi-sou-scrum/" class="md-nav__link">
+        Vixi! Sou scrum master
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+  <a href="https://github.com/insper/bitseproc/edit/docs/docs-src/class/seq-lab-1.md" title="Edit this page" class="md-content__button md-icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25Z"/></svg>
+  </a>
+
+
+
+<h1 id="lab-8-logica-sequencial">Lab 8: Lógica Sequencial<a class="headerlink" href="#lab-8-logica-sequencial" title="Permanent link">¶</a></h1>
+<p>Agora vamos ver como implementamos uma lógica sequencia em MyHDL! Até agora temos utilizado o <code>decorator</code>: <code>@always_comb</code> para indicar que uma função deve ser interpretada como um trecho combinacional:</p>
+<div class="highlight"><pre><span></span><code><span class="nd">@always_comb</span>
+<span class="k">def</span> <span class="nf">comb</span><span class="p">():</span>
+    <span class="n">led</span><span class="o">.</span><span class="n">next</span> <span class="o">=</span> <span class="n">l</span>
+</code></pre></div>
+<p>Agora vamos começar usar um novo <code>decorator</code> (<code>@always_seq</code>) para indicar que uma função deve ser sequencial e depender do <code>clock</code> e do <code>reset</code>. O módulo aseguir demonstra como implementar um flip-flop tipo D em MyHDL:</p>
+<div class="highlight"><pre><span></span><code><span class="nd">@block</span>
+<span class="k">def</span> <span class="nf">dff</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">clk</span><span class="p">,</span> <span class="n">rst</span><span class="p">):</span>
+    <span class="nd">@always_seq</span><span class="p">(</span><span class="n">clk</span><span class="o">.</span><span class="n">posedge</span><span class="p">,</span> <span class="n">reset</span><span class="o">=</span><span class="n">rst</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">seq</span><span class="p">():</span>
+        <span class="n">q</span><span class="o">.</span><span class="n">next</span> <span class="o">=</span> <span class="n">d</span>
+
+    <span class="k">return</span> <span class="n">instances</span><span class="p">()</span>
+</code></pre></div>
+<p>Notem que estamos usando <code>@always_seq(clk.posedge, reset=rst)</code>, e indicando que o módulo deve ser acionado na borda de subida do sinal <code>clk</code> e que o sinal de <code>reset</code> deve ser o <code>rst</code>.</p>
+<p>Podemos interpretar o <code>def seq()</code> da seguinte maneira: Sempre que o sinal clock variar de <code>0</code> para <code>1</code> a função é acionada e então a saída <code>q</code> recebe a entrada <code>d</code>. Podemos visualizar isso como um <code>while True:</code> </p>
+<div class="highlight"><pre><span></span><code>    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">q</span><span class="o">.</span><span class="n">next</span> <span class="o">=</span> <span class="n">d</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">CLOCK</span><span class="p">)</span>
+</code></pre></div>
+<h2 id="dff">dff<a class="headerlink" href="#dff" title="Permanent link">¶</a></h2>
+<div class="admonition exercise hidden" data-pageslug="class-seq-lab-1-" id="class-seq-lab-1-0">
+<p class="admonition-title">Exercise</p>
+<ul>
+<li>File: <code>seq/seq_modules.py</code></li>
+</ul>
+<p>Tarefa:</p>
+<p>Vamos validar o flip-flop, para isso modifique o <code>toplevel.py</code>:</p>
+<div class="highlight"><pre><span></span><code>    <span class="n">ic0</span> <span class="o">=</span> <span class="n">dff</span><span class="p">(</span><span class="n">ledr_s</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">sw_s</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">key_s</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">RESET_N</span><span class="p">)</span>
+</code></pre></div>
+<p>E faça o processo completo para obtermos o hardware.</p>
+<p>Validando:</p>
+<p>Mapeamos o clock para o <code>KEY[0]</code> e a entrada do dff para o <code>SW[0]</code>, notem que ao mexer a chave <code>SW[0]</code> nada acontece, o valor do LED muda apenas após apertar o <code>KEY[0]</code> (que é o <code>clock</code>)</p>
+</div>
+<h3 id="clock">Clock<a class="headerlink" href="#clock" title="Permanent link">¶</a></h3>
+<p>O sinal de clock da nossa FPGA é de <mark>50Mhz</mark>, ou seja: <code>50 000 000</code> vezes por segundo! Isso parece muito né? Mas, dependendo do projeto, podemos elevar o clock para 200Mhz ou usar FPGAs mais rápidas que chegam próximo do 1GHz.</p>
+<h2 id="piscando-led">Piscando LED<a class="headerlink" href="#piscando-led" title="Permanent link">¶</a></h2>
+<p>Agora com o uso da lógica sequencial conseguimos contar 'tempo' e gerar eventos em determinado momento. Ou seja: podemos contar 0.5 segundos e mudar o valor do led, contar mais 0.5 s e mudar novamente (fazer o famoso <strong>pisca led</strong>). Para isso, teremos que conseguir contar eventos de clock, e quando o valor chegar em <strong>25 000 000</strong> inverter o valor do LED e zerar o contador e ficar nesse loop para sempre.</p>
+<p>Podemos usar o nosso <code>adder</code> do lab anterior como módulo de contador, conectando a saída do <code>adder</code> na entrada <code>x</code>, mas passando por um registrador antes (para apenas mudar a cada clock). A entrada <code>y</code> será conectado ao valor <code>1</code>, como resultado teremos: <code>s = x + 1</code>. A expressão será executada a cada subida do clock. E <code>x</code> será:</p>
+<div class="highlight"><pre><span></span><code><span class="k">if</span> <span class="n">s</span> <span class="o">&lt;</span> <span class="n">MAX</span><span class="p">:</span>
+    <span class="n">x</span><span class="o">.</span><span class="n">next</span> <span class="o">=</span> <span class="n">s</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">x</span><span class="o">.</span><span class="n">next</span> <span class="o">=</span> <span class="mi">0</span>
+</code></pre></div>
+<p>Se o valor de <code>s</code> for menor que o valor máximo (define a velocidade que o LED irá piscar) copiamos a saída do somador para a entrada, e se o valor <code>MAX</code> for atingido, iremos zerar o somador, para começarmos novamente. O HW que queremos gerar é algo como:</p>
+<p><img alt="" src="../figs/seq/lab-blink.svg"/></p>
+<p>A implementação em MyHDL:</p>
+<div class="highlight"><pre><span></span><code><span class="nd">@block</span>
+<span class="k">def</span> <span class="nf">blinkLedAdder</span><span class="p">(</span><span class="n">led</span><span class="p">,</span> <span class="n">clk</span><span class="p">,</span> <span class="n">rst</span><span class="p">):</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="n">Signal</span><span class="p">(</span><span class="nb">bool</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">32</span><span class="p">)]</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="n">Signal</span><span class="p">(</span><span class="nb">bool</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">32</span><span class="p">)]</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="p">[</span><span class="n">Signal</span><span class="p">(</span><span class="nb">bool</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">32</span><span class="p">)]</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">Signal</span><span class="p">(</span><span class="nb">bool</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+    <span class="n">status</span> <span class="o">=</span> <span class="n">Signal</span><span class="p">(</span><span class="nb">bool</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span> 
+
+    <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> 
+    <span class="n">adder_1</span> <span class="o">=</span> <span class="n">adder</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span> 
+
+    <span class="nd">@always_seq</span><span class="p">(</span><span class="n">clk</span><span class="o">.</span><span class="n">posedge</span><span class="p">,</span> <span class="n">reset</span><span class="o">=</span><span class="n">rst</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">seq</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">x</span><span class="p">[</span><span class="mi">21</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span> 
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)):</span>
+                <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">next</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> 
+            <span class="n">status</span><span class="o">.</span><span class="n">next</span> <span class="o">=</span> <span class="n">status</span> 
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)):</span>
+                <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">next</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">status</span><span class="o">.</span><span class="n">next</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">status</span>
+
+    <span class="nd">@always_comb</span>
+    <span class="k">def</span> <span class="nf">comb</span><span class="p">():</span>
+        <span class="n">led</span><span class="o">.</span><span class="n">next</span> <span class="o">=</span> <span class="n">status</span>
+
+    <span class="k">return</span> <span class="n">instances</span><span class="p">()</span>
+</code></pre></div>
+<div class="admonition exercise hidden" data-pageslug="class-seq-lab-1-" id="class-seq-lab-1-1">
+<p class="admonition-title">Exercise</p>
+<p>File: <code>toplevel.py</code></p>
+<p>Modifiquem o toplevel para conter o componente:</p>
+<div class="highlight"><pre><span></span><code>   <span class="n">ic1</span> <span class="o">=</span> <span class="n">blinkLedAdder</span><span class="p">(</span><span class="n">ledr_s</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">CLOCK_50</span><span class="p">,</span> <span class="n">RESET_N</span><span class="p">)</span>
+</code></pre></div>
+<p>E façam o fluxo de rodar o módulo na FPGA. Verifiquem que o LED pisca!!</p>
+</div>
+<p>Alguns detalhes devem ser levados em consideração na implementação do componente:</p>
+<ol>
+<li>Estamos lidando com vetores de bit, que devem ser acessados individualmente</li>
+<li>O <code>seq</code> acontece a cada mudança do clock</li>
+<li>O <code>comb</code> acontece sempre</li>
+<li>Não podemos <code>ler</code> uma saída</li>
+</ol>
+<div class="highlight"><pre><span></span><code><span class="gd">- if s &lt; MAX:</span><span class="w"></span>
+<span class="gi">+ if x[24] == 0 and x[23] == 0: </span><span class="w"></span>
+</code></pre></div>
+<p>Temos que lembrar que estamos lidando com um vetor de <code>bits</code> que não possuem ligação entre si, então não podemos fazer uma comparação como se eles fossem um inteiro: <code>if x &lt; 25000000</code>, mas temos que verificar os bits individualmente. Nesse caso eu estou verificando se os bits <code>24</code> e <code>23</code> são iguais a zero. Pois:</p>
+<div class="highlight"><pre><span></span><code>2^24 + 2^23 = 25165824
+</code></pre></div>
+<p>Um valor muito próximo de 25M (um erro menor que 1%). Que para o pisca led não será perceptível. Poderíamos é claro melhorar colocando mais <code>bits</code> na verificação, mas não é necessário.</p>
+<hr/>
+<p>Por conta de <code>x</code> e <code>s</code> serem vetores, temos que fazer uma varredura para atribuirmos cada um dos index:</p>
+<div class="highlight"><pre><span></span><code><span class="gd">- x.next = s</span><span class="w"></span>
+<span class="gi">+ for i in range(len(x)):</span><span class="w"></span>
+<span class="gi">+     x[i].next = s[i]</span><span class="w"></span>
+</code></pre></div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>É importante sabermos que o <code>for</code> em hardware não existe, é apenas um recurso para facilitar a descrição do componente, no lugar de escrevermos isso:</p>
+<div class="highlight"><pre><span></span><code>x[0].next = s[0]
+x[1].next = s[1]
+...
+</code></pre></div>
+</div>
+<hr/>
+<p>A ideia de piscar o LED é que temos que mudar uma variável a cada ciclo do contador. 
+<div class="highlight"><pre><span></span><code>-----------           -------------
+           |          |            |           Status
+           |          |            |
+            -----------            ----------
+
+           _ 25000000  _            _
+         / |         / |          / |      
+      /    |      /    |       /    |          Contador
+   /       |   /       |    /       |
+/          |/          | /          |
+</code></pre></div></p>
+<p>Mas como o sinal <code>led</code> é uma saída, não podemos acessar ele diretamente. Para isso, eu criei um sinal interno auxiliar <code>status</code> que é alterado sempre que o contador é zerado:</p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">seq</span><span class="p">():</span>
+    <span class="k">if</span> <span class="n">x</span><span class="p">[</span><span class="mi">24</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">x</span><span class="p">[</span><span class="mi">23</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">status</span><span class="o">.</span><span class="n">next</span> <span class="o">=</span> <span class="n">status</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">status</span><span class="o">.</span><span class="n">next</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">status</span>
+</code></pre></div>
+<p>E então atribuímos o valor de <code>status</code> para a saída <code>led</code> na parte combinacional do módulo:</p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">comb</span><span class="p">():</span>
+    <span class="n">led</span><span class="o">.</span><span class="n">next</span> <span class="o">=</span> <span class="n">status</span>
+</code></pre></div>
+<h2 id="melhorando">Melhorando<a class="headerlink" href="#melhorando" title="Permanent link">¶</a></h2>
+<p>Até agora estamos usando <strong>mal</strong> os recursos do MyHDL, o componente anterior poderia ser muito mais simples se:</p>
+<ol>
+<li>Pudéssemos tratar sinais como <code>inteiros</code> </li>
+<li>Não precisássemos usar o <code>adder</code></li>
+</ol>
+<p>Para isso o MyHDL possui outros dois tipos de dados além do <code>bool</code>, vamos trabalhar com o <code>intbv</code></p>
+<blockquote>
+<p>Hardware design involves dealing with bits and bit-oriented operations. The standard Python type int has most of the desired features, but lacks support for indexing and slicing. For this reason, MyHDL provides the intbv class. The name was chosen to suggest an integer with bit vector flavor.</p>
+<p>Do mamual: <a href="http://docs.myhdl.org/en/stable/manual/hwtypes.html">http://docs.myhdl.org/en/stable/manual/hwtypes.html</a></p>
+</blockquote>
+<p>Alguns exemplos de como trabalhar com o tipo:</p>
+<div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">a</span> <span class="o">=</span> <span class="n">intbv</span><span class="p">(</span><span class="mi">24</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">b</span> <span class="o">=</span> <span class="n">intbv</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="mi">24</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">print</span><span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span>
+<span class="mi">26</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">print</span><span class="p">(</span><span class="n">a</span> <span class="o">==</span> <span class="mi">12</span><span class="p">)</span>
+<span class="kc">False</span>
+</code></pre></div>
+<p>O <code>intbv</code> não limita a quantidade de bits que será utilizado
+, isso funciona muito bem na simulação, mas quando formos gerar um hardware temos que definir o tamanho do vetor caso contrário teremos erro na conversão. </p>
+<p>O exemplo a seguir indica como criarmos um sinal <code>cnt</code> com 32 bits:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># cnt com 32 bits do tipo intbv</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">cnt</span> <span class="o">=</span> <span class="n">Signal</span><span class="p">(</span><span class="n">intbv</span><span class="p">(</span><span class="mi">0</span><span class="p">)[</span><span class="mi">32</span><span class="p">:])</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">cnt</span><span class="o">.</span><span class="n">max</span>
+<span class="mi">4294967296</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">cnt</span><span class="o">.</span><span class="n">min</span>
+<span class="mi">0</span>
+</code></pre></div>
+<h2 id="blink-melhorado">blink melhorado<a class="headerlink" href="#blink-melhorado" title="Permanent link">¶</a></h2>
+<p>Vamos agora reimplementar o blink, mas usando os novos recursos:</p>
+<div class="highlight"><pre><span></span><code><span class="nd">@block</span>
+<span class="k">def</span> <span class="nf">blinkLed</span><span class="p">(</span><span class="n">led</span><span class="p">,</span> <span class="n">clk</span><span class="p">,</span> <span class="n">rst</span><span class="p">):</span>
+    <span class="n">cnt</span> <span class="o">=</span> <span class="n">Signal</span><span class="p">(</span><span class="n">intbv</span><span class="p">(</span><span class="mi">0</span><span class="p">)[</span><span class="mi">32</span><span class="p">:])</span>
+    <span class="n">l</span> <span class="o">=</span> <span class="n">Signal</span><span class="p">(</span><span class="nb">bool</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+
+    <span class="nd">@always_seq</span><span class="p">(</span><span class="n">clk</span><span class="o">.</span><span class="n">posedge</span><span class="p">,</span> <span class="n">reset</span><span class="o">=</span><span class="n">rst</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">seq</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">cnt</span> <span class="o">&lt;</span> <span class="mi">25000000</span><span class="p">:</span>
+            <span class="n">cnt</span><span class="o">.</span><span class="n">next</span> <span class="o">=</span> <span class="n">cnt</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">cnt</span><span class="o">.</span><span class="n">next</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">l</span><span class="o">.</span><span class="n">next</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">l</span>
+
+    <span class="nd">@always_comb</span>
+    <span class="k">def</span> <span class="nf">comb</span><span class="p">():</span>
+        <span class="n">led</span><span class="o">.</span><span class="n">next</span> <span class="o">=</span> <span class="n">l</span>
+
+    <span class="k">return</span> <span class="n">instances</span><span class="p">()</span>
+</code></pre></div>
+<div class="admonition tip">
+<p>Muito mais simples em! =)</p>
+</div>
+<div class="admonition exercise hidden" data-pageslug="class-seq-lab-1-" id="class-seq-lab-1-2">
+<p class="admonition-title">Exercise</p>
+<ul>
+<li>File: <code>toplevel.py</code></li>
+</ul>
+<p>Tarefa:</p>
+<p>Modifique o toplevel para usar o novo componente e verifique na placa que ele funciona como deveria.</p>
+<div class="highlight"><pre><span></span><code><span class="n">ic1</span> <span class="o">=</span> <span class="n">blinkLed</span><span class="p">(</span><span class="n">ledr_s</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">CLOCK_50</span><span class="p">,</span> <span class="n">RESET_N</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="admonition exercise short hidden" data-pageslug="class-seq-lab-1-" id="class-seq-lab-1-3">
+<p class="admonition-title">Exercise</p>
+<p>O <code>cnt</code> de 32 bits está bem dimensionado? Esse valor faz alguma diferença?</p>
+<p><code>cnt = Signal(intbv(0)[32:])</code></p>
+<div class="admonition answer">
+<p class="admonition-title">Answer</p>
+<ul>
+<li>32 bits = 4294967296</li>
+<li>4294967296/50M = 85s</li>
+</ul>
+<p>Faz diferença sim! Quando mais bits, mais registradores temos que usar e maior ficar o hardware.</p>
+<p>Poderíamos dimensionar o tamanho do vetor de acordo com o <code>time_ms</code> que foi passado para o módulo.</p>
+</div>
+</div>
+<div class="admonition exercise hidden" data-pageslug="class-seq-lab-1-" id="class-seq-lab-1-4">
+<p class="admonition-title">Exercise</p>
+<ul>
+<li>File: <code>seq_modules.py</code></li>
+<li>Função: <code>blinkLed</code></li>
+</ul>
+<p>Vamos deixar o componente mais genérico? Para isso modifique a função <code>blinkLed</code> para receber mais um argumento: O valor em <code>ms</code> na qual o LED irá piscar:</p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">blinkLed</span><span class="p">(</span><span class="n">led</span><span class="p">,</span> <span class="n">time_ms</span><span class="p">,</span> <span class="n">clk</span><span class="p">,</span> <span class="n">rst</span><span class="p">):</span>
+</code></pre></div>
+<p>Depois modifique o toplevel para validar diferentes valores em diferentes leds:</p>
+<div class="highlight"><pre><span></span><code><span class="n">ic1</span> <span class="o">=</span> <span class="n">blinkLed</span><span class="p">(</span><span class="n">ledr_s</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">100</span><span class="p">,</span> <span class="n">CLOCK_50</span><span class="p">,</span> <span class="n">RESET_N</span><span class="p">)</span>
+<span class="n">ic2</span> <span class="o">=</span> <span class="n">blinkLed</span><span class="p">(</span><span class="n">ledr_s</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">50</span><span class="p">,</span> <span class="n">CLOCK_50</span><span class="p">,</span> <span class="n">RESET_N</span><span class="p">)</span>
+<span class="n">ic3</span> <span class="o">=</span> <span class="n">blinkLed</span><span class="p">(</span><span class="n">ledr_s</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="mi">1000</span><span class="p">,</span> <span class="n">CLOCK_50</span><span class="p">,</span> <span class="n">RESET_N</span><span class="p">)</span>
+</code></pre></div>
+<p>Lembre de validar na FPGA!</p>
+</div>
+<div class="admonition exercise hidden" data-pageslug="class-seq-lab-1-" id="class-seq-lab-1-5">
+<p class="admonition-title">Exercise</p>
+<ul>
+<li>File: <code>seq_modules.py</code></li>
+<li>Função: <code>barLed</code></li>
+</ul>
+<p>Tarefa:</p>
+<p>Vamos praticar mais! Agora faça com que os LEDs da FPGA acendam em sequência: Primeiro o LED0, depois o LED1... (como uma animação), ao chegar no final apague tudo e comece novamente.</p>
+<p>Dica:</p>
+<p>Você vai precisar de mais um contador indo de 0 a 9</p>
+</div>
+<div class="admonition exercise hidden" data-pageslug="class-seq-lab-1-" id="class-seq-lab-1-6">
+<p class="admonition-title">Exercise</p>
+<ul>
+<li>File: <code>seq_modules.py</code></li>
+<li>Função: <code>barLed</code></li>
+</ul>
+<p>Modifique a barLed adicionando:</p>
+<ul>
+<li>SW[0] controla a velocidade dos LEDs: Rápido ou Lento</li>
+<li>SW[1] controla a direção (esquerda/ direita)</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">barLed</span><span class="p">(</span><span class="n">leds</span><span class="p">,</span> <span class="n">time_ms</span><span class="p">,</span> <span class="nb">dir</span><span class="p">,</span> <span class="n">vel</span><span class="p">,</span> <span class="n">clk</span><span class="p">,</span> <span class="n">rst</span><span class="p">):</span>
+</code></pre></div>
+</div>
+<div class="admonition exercise hidden" data-pageslug="class-seq-lab-1-" id="class-seq-lab-1-7">
+<p class="admonition-title">Exercise</p>
+<ul>
+<li>File: <code>seq_modules.py</code></li>
+<li>Função: <code>barLed2</code></li>
+</ul>
+<p>Tarefa:</p>
+<p>O barLed2 é similar ao LED porém só um LED aceso por vez!</p>
+<p>Dica:</p>
+<p>Aplique um shift de <code>cntLed</code> ao valor em binário <code>000000001</code>, onde <code>cntLed</code> é o contador de 0, 9.</p>
+<div class="highlight"><pre><span></span><code><span class="nd">@always_comb</span>
+<span class="k">def</span> <span class="nf">comb</span><span class="p">():</span>
+    <span class="n">leds</span><span class="o">.</span><span class="n">next</span> <span class="o">=</span> <span class="n">intbv</span><span class="p">(</span><span class="mi">1</span><span class="p">)[</span><span class="mi">10</span><span class="p">:]</span> <span class="o">&lt;&lt;</span> <span class="n">cntLed</span>
+</code></pre></div>
+</div>
+<h2 id="desafio">Desafio<a class="headerlink" href="#desafio" title="Permanent link">¶</a></h2>
+<p>Ideias de LABs com utilidade:</p>
+<ul>
+<li>Ultrasom HC-SR04?</li>
+<li>LED RGB</li>
+<li>StepMotor</li>
+<li>Servo</li>
+<li>...</li>
+</ul>
+
+              
+            </article>
+            
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var tab,labels=set.querySelector(".tabbed-labels");for(tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+          </div>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+    <nav class="md-footer__inner md-grid" aria-label="Footer" >
+      
+        
+        <a href="../ula-lab-2/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Lab 7: Depurando" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              Lab 7: Depurando
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="../../commum-content/teoria/Teoria-Dados/" class="md-footer__link md-footer__link--next" aria-label="Next: Dados Digitais" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              Dados Digitais
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; Rafael Corsi @ insper
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.instant", "navigation.tabs", "navigation.tabs.sticky", "toc.integrate", "content.tabs.link", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.b97dbffb.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.6c7ad80a.min.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.0.0/js-yaml.min.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/gh/insper-education/active-handout-plugins-js@main/package/plugin-bundle.js"></script>
+      
+    
+  </body>
+</html>
